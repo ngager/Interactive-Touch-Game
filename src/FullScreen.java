@@ -8,7 +8,7 @@ public class FullScreen extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private static Screen s;
 	// Read image into matrix
-	Mat m = Highgui.imread( "/Users/danny/Downloads/totoro.jpg", Highgui.CV_LOAD_IMAGE_COLOR);
+	Mat m = Highgui.imread( "/Users/danny/Downloads/above.png", Highgui.CV_LOAD_IMAGE_COLOR);
 
 	// Creates a Screen object and sets it to full screen
 	public void run( DisplayMode dm ){
@@ -40,10 +40,9 @@ public class FullScreen extends JFrame{
 		double alpha = 0.4, beta;
 		Mat src1, src2, destination;
 
-		src1 = Highgui.imread( "/Users/danny/Downloads/totoro.jpg", Highgui.CV_LOAD_IMAGE_COLOR);
-		src2 = Highgui.imread( "/Users/danny/Downloads/galaxy.jpg", Highgui.CV_LOAD_IMAGE_COLOR);
-		destination = Highgui.imread( "/Users/danny/Downloads/new.jpg", Highgui.CV_LOAD_IMAGE_COLOR);
-
+		src1 = Highgui.imread( "/Users/danny/Downloads/above.png", Highgui.CV_LOAD_IMAGE_COLOR);
+		src2 = Highgui.imread( "/Users/danny/Downloads/below.png", Highgui.CV_LOAD_IMAGE_COLOR);
+		destination = Highgui.imread( "/Users/danny/Downloads/new.png", Highgui.CV_LOAD_IMAGE_COLOR);
 
 		if( src1 == null || src2 == null){
 			System.exit( -1 );
@@ -52,7 +51,7 @@ public class FullScreen extends JFrame{
 		beta = 1.0 - alpha;
 
 		Core.addWeighted( src1, alpha, src2, beta, 0.0, destination );
-		s.loadImage( "/Users/danny/Downloads/new.jpg", destination, this );
+		s.loadImage( "/Users/danny/Downloads/new.png", destination, this );
 	}
 	
 	public static void main( String[] args ){
