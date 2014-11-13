@@ -8,7 +8,7 @@ public class Main {
 	public static void main(String[] args)
 	{
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-		Mat m=Highgui.imread("C:\\Users\\dja94_000\\Desktop\\totoro.jpg",Highgui.CV_LOAD_IMAGE_COLOR);
-		new LoadImage("C:\\Users\\dja94_000\\Desktop\\totoro_new.jpg",m);
+		Mat m=Highgui.imread("\\Users\\danny\\Downloads\\totoro.png",Highgui.CV_LOAD_IMAGE_COLOR);
+		new LoadImage("\\Users\\danny\\Downloads\\totoro.png",m);
 	}
 }
