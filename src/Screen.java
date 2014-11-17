@@ -1,8 +1,5 @@
 import java.awt.*;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.*;
 
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
@@ -36,20 +33,11 @@ public class Screen {
 		return vc.getFullScreenWindow();
 	}
 
-	public void restoreScreen(){
+	public void restoreScreen() {
 		Window w = vc.getFullScreenWindow();
-		if( w != null ){
+		if (w != null) {
 			w.dispose();
 		}
-		vc.setFullScreenWindow( null );
-	}
-
-	public void loadImage( String imgStr, Mat m, FullScreen window ){
-		Highgui.imwrite( imgStr,  m );	
-		ImageIcon image = new ImageIcon( imgStr );
-		JLabel label1 = new JLabel(" ", image, JLabel.CENTER );
-		window.getContentPane().add( label1 );
-		window.validate();
-		window.setVisible( true );
+		vc.setFullScreenWindow(null);
 	}
 }
