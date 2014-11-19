@@ -1,23 +1,41 @@
 import java.awt.*;
 import javax.swing.*;
+
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.SmoothingPolynomialBicubicSplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.opencv.core.*;
 import org.opencv.highgui.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.nio.*;
+import org.apache.commons.math3.analysis.*;
 
 public class FullScreen extends JFrame implements MouseListener, MouseMotionListener{
 	private static final long serialVersionUID = 1L;
 
-	private static Screen s;
+	private Screen s;
 	// Image matrices
 	private Mat aboveMat, belowMat, destination, revealMask;
 	// Load to BufferedImages
 	private BufferedImage aboveImage, belowImage, destImage;
 
+	// Interpolation variables
+	private double[] draggedXVals;
+	private double[] draggedYVals;
+	private double globalYDrag = 0.0;
+	private int index = 0;
+	double[] polynomials;
+
+	private LinearInterpolator interpolator = new LinearInterpolator();
+	///////////////////////////
+
 	public FullScreen(){
 		addMouseListener(this);
-		addMouseMotionListener( this );
+		addMouseMotionListener(this);
+		draggedXVals = new double[2];
+		draggedYVals = new double[2];
 		// Read images into matrices
 		aboveMat = Highgui.imread( "/Users/danny/Downloads/above.png", Highgui.CV_LOAD_IMAGE_COLOR);
 		belowMat = Highgui.imread( "/Users/danny/Downloads/below.png", Highgui.CV_LOAD_IMAGE_COLOR);
@@ -55,15 +73,11 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 	public void run( DisplayMode dm ){
 		setFont( new Font("Arial", Font.PLAIN, 24) );
 		s = new Screen();
-		try{
+		try {
 			s.setFullScreen(dm, this);
-			//s.loadImage( "/Users/danny/Downloads/above.png", aboveMat, this );
-			//try{
-			//	Thread.sleep( 5000 );
-			//}catch( Exception ex ){}
-		}finally{
-			//s.restoreScreen();
-		}
+		}catch( Exception e ){
+				System.out.println( e.getStackTrace() );
+			}
 	}
 
 	// Convert a Mat to a BufferedImage
@@ -94,7 +108,72 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 		destImage = toBufferedImage( destination );
 		repaint();
 	}
-	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
+		int radius = 50;
+		Core.circle(destination, mousePoint, radius, new Scalar(255.0, 255.0, 255.0), 1, Core.LINE_AA, 0);
+		destImage = toBufferedImage( destination );
+		repaint();
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		globalYDrag = e.getY();
+		org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
+		int radius = 50;
+		// Clear the array after 2 vals have been stored
+//		if( index == 2){
+//			findInterpolation( draggedXVals, draggedYVals );
+//			index = 0;
+//		}
+//
+//		draggedXVals[index] = mousePoint.x;
+//		draggedYVals[index] = mousePoint.y;
+//		index++;
+		Core.circle(destination, mousePoint, radius, new Scalar(255.0, 255.0, 255.0), -1, Core.LINE_AA, 0);
+		destImage = toBufferedImage( destination );
+		repaint((int)mousePoint.x-radius, (int)mousePoint.y-radius, radius*2, radius*2);
+	}
+
+//	public void checkPixels( Mat destination ){
+//		ByteBuffer screenbuffer = destImage.getByteBuffer();
+//		ByteBuffer imgAbuffer = aboveImage.getByteBuffer();
+//		ByteBuffer imgBbuffer = belowImage.getByteBuffer();
+//		ByteBuffer revealbuffer = revealMask.getByteBuffer();
+//
+//		for(int y = 0; y < 1080; y++)
+//		{
+//			for(int x = 0; x < 1920; x++)
+//			{
+//				int index = y * destImage.widthStep() + x * destImage.nChannels();
+//
+//				// Used to read the pixel value - the 0xFF is needed to cast from
+//				// an unsigned byte to an int.
+//				int aValue = imgAbuffer.get(index) & 0xFF;
+//				int bValue = imgBbuffer.get(index) & 0xFF;
+//				int maskValue = revealbuffer.get(index) & 0xFF;
+//
+//				if (maskValue == 0)
+//					screenbuffer.put(index, aValue);
+//				else if (maskValue == 1)
+//					screenbuffer.put(index, bValue);
+//
+//			}
+//		}
+//	}
+
+	public void findInterpolation( double[] x, double[] y ){
+		polynomials = interpolator.interpolate( x, y ).getKnots();
+		for (int f = 0; f < polynomials.length; f++ ){
+			org.opencv.core.Point polyPoint = new org.opencv.core.Point(polynomials[f], globalYDrag );
+			Core.circle(destination, polyPoint, 50, new Scalar(255.0, 255.0, 255.0), 1, Core.LINE_AA, 0);
+			//System.out.println( polynomials[f]);
+			repaint();
+		}
+	}
+
 	public static void main( String[] args ){
 		// Load the openCV library
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
@@ -102,19 +181,6 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 		DisplayMode dm = new DisplayMode( 1920, 1080, 16, DisplayMode.REFRESH_RATE_UNKNOWN );
 		FullScreen w = new FullScreen();
 		w.run( dm );
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
-
-		int radius = 50;
-
-		System.out.println( mousePoint );
-		Core.circle(destination, mousePoint, radius, new Scalar(255.0, 255.0, 255.0), 1, Core.LINE_AA, 0);
-		destImage = toBufferedImage( destination );
-
-		repaint();
 	}
 
 	@Override
@@ -135,19 +201,6 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 	@Override
 	public void mouseExited(MouseEvent e) {
 
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
-
-		int radius = 50;
-
-		System.out.println( mousePoint );
-		Core.circle(destination, mousePoint, radius, new Scalar(255.0, 255.0, 255.0), 1, Core.LINE_AA, 0);
-		destImage = toBufferedImage( destination );
-
-		repaint();
 	}
 
 	@Override
