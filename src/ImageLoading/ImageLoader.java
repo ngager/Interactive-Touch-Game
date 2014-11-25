@@ -34,6 +34,12 @@ public class ImageLoader {
         else return null;
     }
 
+    // Returns the image associated with the layer given,
+    // ** Has to actually create the new image in order for it to be updated.
+    public BufferedImage getImage(Mat m) {
+        return matToImage( m );
+    }
+
     // Convert a Mat to a BufferedImage
     // Displays faster this way and avoids screen flickering
     public BufferedImage matToImage(Mat m) {
@@ -50,9 +56,42 @@ public class ImageLoader {
         return image;
     }
 
-    // Returns the image associated with the layer given,
-    // ** Has to actually create the new image in order for it to be updated.
-    public BufferedImage getImage(Mat m) {
-        return matToImage( m );
-    }
+//    public void blendImages( ){
+//        double alpha = 0.4, beta;
+//        // src1 is aboveMat, src2 is belowMat
+//
+//        if( aboveMat == null || belowMat == null){
+//            System.exit( -1 );
+//        }
+//        beta = 1.0 - alpha;
+//        Core.addWeighted( aboveMat, alpha, belowMat, beta, 0.0, destination );
+//        repaint();
+//    }
+
+//	public void checkPixels( Mat destination ){
+//		ByteBuffer screenbuffer = destImage.getByteBuffer();
+//		ByteBuffer imgAbuffer = aboveImage.getByteBuffer();
+//		ByteBuffer imgBbuffer = belowImage.getByteBuffer();
+//		ByteBuffer revealbuffer = revealMask.getByteBuffer();
+//
+//		for(int y = 0; y < 1080; y++)
+//		{
+//			for(int x = 0; x < 1920; x++)
+//			{
+//				int index = y * destImage.widthStep() + x * destImage.nChannels();
+//
+//				// Used to read the pixel value - the 0xFF is needed to cast from
+//				// an unsigned byte to an int.
+//				int aValue = imgAbuffer.get(index) & 0xFF;
+//				int bValue = imgBbuffer.get(index) & 0xFF;
+//				int maskValue = revealbuffer.get(index) & 0xFF;
+//
+//				if (maskValue == 0)
+//					screenbuffer.put(index, aValue);
+//				else if (maskValue == 1)
+//					screenbuffer.put(index, bValue);
+//
+//			}
+//		}
+//	}
 }

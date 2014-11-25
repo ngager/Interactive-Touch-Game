@@ -75,18 +75,6 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 			}
 	}
 
-	public void blendImages( ){
-		double alpha = 0.4, beta;
-		// src1 is aboveMat, src2 is belowMat
-
-		if( aboveMat == null || belowMat == null){
-			System.exit( -1 );
-		}
-		beta = 1.0 - alpha;
-		Core.addWeighted( aboveMat, alpha, belowMat, beta, 0.0, destination );
-		repaint();
-	}
-
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
@@ -102,33 +90,7 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 		repaint((int)mousePoint.x-circleRadius, (int)mousePoint.y-circleRadius, circleRadius*2, circleRadius*2);
 	}
 
-//	public void checkPixels( Mat destination ){
-//		ByteBuffer screenbuffer = destImage.getByteBuffer();
-//		ByteBuffer imgAbuffer = aboveImage.getByteBuffer();
-//		ByteBuffer imgBbuffer = belowImage.getByteBuffer();
-//		ByteBuffer revealbuffer = revealMask.getByteBuffer();
-//
-//		for(int y = 0; y < 1080; y++)
-//		{
-//			for(int x = 0; x < 1920; x++)
-//			{
-//				int index = y * destImage.widthStep() + x * destImage.nChannels();
-//
-//				// Used to read the pixel value - the 0xFF is needed to cast from
-//				// an unsigned byte to an int.
-//				int aValue = imgAbuffer.get(index) & 0xFF;
-//				int bValue = imgBbuffer.get(index) & 0xFF;
-//				int maskValue = revealbuffer.get(index) & 0xFF;
-//
-//				if (maskValue == 0)
-//					screenbuffer.put(index, aValue);
-//				else if (maskValue == 1)
-//					screenbuffer.put(index, bValue);
-//
-//			}
-//		}
-//	}
-
+	// Unused MouseEvents
 	@Override
 	public void mousePressed(MouseEvent e) {
 
