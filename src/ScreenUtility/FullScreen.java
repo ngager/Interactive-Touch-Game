@@ -21,6 +21,7 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 	private BufferedImage aboveImage, belowImage, destImage, maskImage;
 	private int circleRadius = 50;
 	private ImageLoader imageLoader;
+	public org.opencv.core.Point globalPoint;
 
 
 	public FullScreen( ImageLoader imgLoader ){
@@ -57,8 +58,12 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 					g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 				}
 				super.paintComponent( g );
-
+				// Calculate the new pixels
+				if( globalPoint != null )
+					imageLoader.checkPixels( aboveMat, destination, globalPoint );
+				// Render the new image
 				destImage = imageLoader.getImage( destination );
+				// Draw it
 				g.drawImage(destImage, 0, 0, null);
 			}
 		});
@@ -85,9 +90,10 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
-
-		Core.circle(destination, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, Core.LINE_AA, 0);
-		repaint((int)mousePoint.x-circleRadius, (int)mousePoint.y-circleRadius, circleRadius*2, circleRadius*2);
+		globalPoint = mousePoint;
+		Core.circle(aboveMat, mousePoint, circleRadius, new Scalar(7.0, 255.0, 255.0), -1, 0, 0);
+		//repaint((int) mousePoint.x - circleRadius, (int) mousePoint.y - circleRadius, circleRadius * 2, circleRadius * 2);
+		repaint();
 	}
 
 	// Unused MouseEvents

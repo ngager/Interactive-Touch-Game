@@ -2,7 +2,7 @@ package ImageLoading;
 
 import java.awt.*;
 import javax.swing.*;
-
+import java.nio.ByteBuffer;
 import org.opencv.core.*;
 import org.opencv.highgui.*;
 import java.awt.event.MouseEvent;
@@ -56,42 +56,99 @@ public class ImageLoader {
         return image;
     }
 
-//    public void blendImages( ){
-//        double alpha = 0.4, beta;
-//        // src1 is aboveMat, src2 is belowMat
-//
-//        if( aboveMat == null || belowMat == null){
-//            System.exit( -1 );
-//        }
-//        beta = 1.0 - alpha;
-//        Core.addWeighted( aboveMat, alpha, belowMat, beta, 0.0, destination );
-//        repaint();
-//    }
+    //    public void blendImages( ){
+    //        double alpha = 0.4, beta;
+    //        // src1 is aboveMat, src2 is belowMat
+    //
+    //        if( aboveMat == null || belowMat == null){
+    //            System.exit( -1 );
+    //        }
+    //        beta = 1.0 - alpha;
+    //        Core.addWeighted( aboveMat, alpha, belowMat, beta, 0.0, destination );
+    //        repaint();
+    //    }
 
-//	public void checkPixels( Mat destination ){
-//		ByteBuffer screenbuffer = destImage.getByteBuffer();
-//		ByteBuffer imgAbuffer = aboveImage.getByteBuffer();
-//		ByteBuffer imgBbuffer = belowImage.getByteBuffer();
-//		ByteBuffer revealbuffer = revealMask.getByteBuffer();
-//
-//		for(int y = 0; y < 1080; y++)
-//		{
-//			for(int x = 0; x < 1920; x++)
-//			{
-//				int index = y * destImage.widthStep() + x * destImage.nChannels();
-//
-//				// Used to read the pixel value - the 0xFF is needed to cast from
-//				// an unsigned byte to an int.
-//				int aValue = imgAbuffer.get(index) & 0xFF;
-//				int bValue = imgBbuffer.get(index) & 0xFF;
-//				int maskValue = revealbuffer.get(index) & 0xFF;
-//
-//				if (maskValue == 0)
-//					screenbuffer.put(index, aValue);
-//				else if (maskValue == 1)
-//					screenbuffer.put(index, bValue);
-//
-//			}
-//		}
-//	}
+    public void checkPixels( Mat above, Mat destination, org.opencv.core.Point mousePoint ){
+        int mouseX = (int) mousePoint.x, mouseY = (int) mousePoint.y;
+
+        // Check mask value at drag
+        double[] values = maskMat.get( mouseX, mouseY );
+        // BLACK
+        if( values == null ){
+
+        // GRAY
+        }else if( values[0] == 128.0 ){
+            
+        // WHITE
+        }else if( values[0] == 255.0 ){
+            //System.out.println("water!");
+            /**
+             * OPTIMIZED BLENDING ALGORITHM
+             */
+
+            int rowStart = (int)mousePoint.y - 50;
+            int rowEnd = (int)mousePoint.y + 50;
+
+            int colStart = (int)mousePoint.x - 50;
+            int colEnd = (int)mousePoint.x + 50;
+
+            for( int r = rowStart; r < rowEnd; r++ ){
+                for( int c = colStart; c < colEnd; c++ ){
+
+                    double[] vals = above.get( r, c );
+                    if( vals == null ){
+                        System.out.println( "null" );
+                    }
+                    else if( vals[0] == 7.0 ){
+                        destination.put( r, c, belowMat.get( r, c ) );
+                    }
+                }
+            }
+//            int rows = destination.rows();
+//            int cols = destination.cols();
+//            for( int r = 0; r < rows; r++ ){
+//                for( int c = 0; c < cols; c++ ){
+//                    double[] vals = destination.get( r, c );
+//                    if( vals == null ){
+//                        System.out.println( "null" );
+//                    }
+//                    else if( vals[0] == 7.0 ){
+//                        destination.put( r, c, belowMat.get( r, c ) );
+//                    }
+//                }
+//            }
+        }
+
+        //System.out.println( "---" );
+        //destination.put( x, y, belowMat.get( x, y));
+
+        //        byte[] screenBuffer =   new byte[ destination.rows() * destination.cols() * destination.channels()];
+        //        byte[] maskBuffer =     new byte[ maskMat.rows() * maskMat.cols() * maskMat.channels()];
+        //		byte[] aboveBuffer =    new byte[ aboveMat.rows() * aboveMat.cols() * aboveMat.channels()];
+        //		byte[] belowBuffer =    new byte[ belowMat.rows() * belowMat.cols() * belowMat.channels()];
+        //        ByteBuffer screenBuf = ByteBuffer.wrap( screenBuffer );
+        //        ByteBuffer maskBuf = ByteBuffer.wrap( maskBuffer );
+        //        ByteBuffer aboveBuf = ByteBuffer.wrap( aboveBuffer );
+        //        ByteBuffer belowBuf = ByteBuffer.wrap( belowBuffer );
+        //
+        //        destination.get( 0, 0, screenBuffer );
+        //
+        //		for(int y = 0; y < 1080; y++)
+        //		{
+        //			for(int x = 0; x < 1920; x++)
+        //			{
+        //				int index = y * getImage( destination ).getWidth() + x;
+        //				// Used to read the pixel value - the 0xFF is needed to cast from
+        //				// an unsigned byte to an int.
+        //				byte aValue = aboveBuf.get(index);
+        //				byte bValue = belowBuf.get(index);
+        //				byte maskValue = maskBuf.get(index);
+        //				if (maskValue == 0)
+        //					screenBuf.put(index, aValue);
+        //				else if (maskValue == 1)
+        //					screenBuf.put(index, bValue);
+        //			}
+        //		}
+        //        destination.put( 0, 0, screenBuffer );
+    }
 }
