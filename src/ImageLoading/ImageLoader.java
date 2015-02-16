@@ -78,14 +78,35 @@ public class ImageLoader {
 
         // GRAY
         }else if( values[0] == 128.0 ){
-            
-        // WHITE
-        }else if( values[0] == 255.0 ){
-            //System.out.println("water!");
             /**
              * OPTIMIZED BLENDING ALGORITHM
              */
+            // Have to only check the rows that we need around the circle!
+            int rowStart = (int)mousePoint.y - 50;
+            int rowEnd = (int)mousePoint.y + 50;
 
+            int colStart = (int)mousePoint.x - 50;
+            int colEnd = (int)mousePoint.x + 50;
+
+            for( int r = rowStart; r < rowEnd; r++ ) {
+                for (int c = colStart; c < colEnd; c++) {
+
+                    double[] vals = above.get(r, c);
+                    if (vals == null) {
+                        System.out.println("null");
+                    }
+                    // TEMP, using 7.0 because that is what I paint on drag.
+                    else if (vals[0] == 7.0) {
+                        destination.put(r, c, belowMat.get(r, c));
+                    }
+                }
+            }
+        // WHITE
+        }else if( values[0] == 255.0 ){
+            /**
+             * OPTIMIZED BLENDING ALGORITHM
+             */
+            // Have to only check the rows that we need around the circle!
             int rowStart = (int)mousePoint.y - 50;
             int rowEnd = (int)mousePoint.y + 50;
 
@@ -99,11 +120,19 @@ public class ImageLoader {
                     if( vals == null ){
                         System.out.println( "null" );
                     }
+                    // TEMP, using 7.0 because that is what I paint on drag.
                     else if( vals[0] == 7.0 ){
                         destination.put( r, c, belowMat.get( r, c ) );
                     }
                 }
             }
+
+        }
+
+        /**
+         * Original code, not optimized.
+         * - Checked the whole screen and made it horrificly slow.
+         */
 //            int rows = destination.rows();
 //            int cols = destination.cols();
 //            for( int r = 0; r < rows; r++ ){
@@ -117,38 +146,36 @@ public class ImageLoader {
 //                    }
 //                }
 //            }
-        }
-
-        //System.out.println( "---" );
-        //destination.put( x, y, belowMat.get( x, y));
-
-        //        byte[] screenBuffer =   new byte[ destination.rows() * destination.cols() * destination.channels()];
-        //        byte[] maskBuffer =     new byte[ maskMat.rows() * maskMat.cols() * maskMat.channels()];
-        //		byte[] aboveBuffer =    new byte[ aboveMat.rows() * aboveMat.cols() * aboveMat.channels()];
-        //		byte[] belowBuffer =    new byte[ belowMat.rows() * belowMat.cols() * belowMat.channels()];
-        //        ByteBuffer screenBuf = ByteBuffer.wrap( screenBuffer );
-        //        ByteBuffer maskBuf = ByteBuffer.wrap( maskBuffer );
-        //        ByteBuffer aboveBuf = ByteBuffer.wrap( aboveBuffer );
-        //        ByteBuffer belowBuf = ByteBuffer.wrap( belowBuffer );
-        //
-        //        destination.get( 0, 0, screenBuffer );
-        //
-        //		for(int y = 0; y < 1080; y++)
-        //		{
-        //			for(int x = 0; x < 1920; x++)
-        //			{
-        //				int index = y * getImage( destination ).getWidth() + x;
-        //				// Used to read the pixel value - the 0xFF is needed to cast from
-        //				// an unsigned byte to an int.
-        //				byte aValue = aboveBuf.get(index);
-        //				byte bValue = belowBuf.get(index);
-        //				byte maskValue = maskBuf.get(index);
-        //				if (maskValue == 0)
-        //					screenBuf.put(index, aValue);
-        //				else if (maskValue == 1)
-        //					screenBuf.put(index, bValue);
-        //			}
-        //		}
-        //        destination.put( 0, 0, screenBuffer );
+//        System.out.println( "---" );
+//        destination.put( x, y, belowMat.get( x, y));
+//
+//                byte[] screenBuffer =   new byte[ destination.rows() * destination.cols() * destination.channels()];
+//                byte[] maskBuffer =     new byte[ maskMat.rows() * maskMat.cols() * maskMat.channels()];
+//        		byte[] aboveBuffer =    new byte[ aboveMat.rows() * aboveMat.cols() * aboveMat.channels()];
+//        		byte[] belowBuffer =    new byte[ belowMat.rows() * belowMat.cols() * belowMat.channels()];
+//                ByteBuffer screenBuf = ByteBuffer.wrap( screenBuffer );
+//                ByteBuffer maskBuf = ByteBuffer.wrap( maskBuffer );
+//                ByteBuffer aboveBuf = ByteBuffer.wrap( aboveBuffer );
+//                ByteBuffer belowBuf = ByteBuffer.wrap( belowBuffer );
+//
+//                destination.get( 0, 0, screenBuffer );
+//
+//        		for(int y = 0; y < 1080; y++)
+//        		{
+//        			for(int x = 0; x < 1920; x++)
+//        			{
+//        				int index = y * getImage( destination ).getWidth() + x;
+//        				// Used to read the pixel value - the 0xFF is needed to cast from
+//        				// an unsigned byte to an int.
+//        				byte aValue = aboveBuf.get(index);
+//        				byte bValue = belowBuf.get(index);
+//        				byte maskValue = maskBuf.get(index);
+//        				if (maskValue == 0)
+//        					screenBuf.put(index, aValue);
+//        				else if (maskValue == 1)
+//        					screenBuf.put(index, bValue);
+//        			}
+//        		}
+//                destination.put( 0, 0, screenBuffer );
     }
 }

@@ -9,7 +9,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.nio.*;
-import org.apache.commons.math3.analysis.*;
 
 public class FullScreen extends JFrame implements MouseListener, MouseMotionListener{
 	private static final long serialVersionUID = 1L;
@@ -83,8 +82,10 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
-		Core.circle(destination, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), 1, Core.LINE_AA, 0);
-		repaint();
+		globalPoint = mousePoint;
+		Core.circle(aboveMat, mousePoint, circleRadius, new Scalar(7.0, 255.0, 255.0), -1, 0, 0);
+		repaint((int) mousePoint.x - circleRadius, (int) mousePoint.y - circleRadius, circleRadius * 2, circleRadius * 2);
+		//repaint();
 	}
 
 	@Override
@@ -92,8 +93,8 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 		org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
 		globalPoint = mousePoint;
 		Core.circle(aboveMat, mousePoint, circleRadius, new Scalar(7.0, 255.0, 255.0), -1, 0, 0);
-		//repaint((int) mousePoint.x - circleRadius, (int) mousePoint.y - circleRadius, circleRadius * 2, circleRadius * 2);
-		repaint();
+		repaint((int) mousePoint.x - circleRadius, (int) mousePoint.y - circleRadius, circleRadius * 2, circleRadius * 2);
+		//repaint();
 	}
 
 	// Unused MouseEvents
