@@ -21,7 +21,9 @@ public class Screen {
 	// Build a window and convert to full screen
 	public void setFullScreen( DisplayMode dm, JFrame window ){
 		window.setUndecorated( true );
-		window.setResizable( false );
+		window.setResizable(false);
+
+		window.setSize( 1920, 1080 );
 		vc.setFullScreenWindow( window );
 
 		if( dm != null && vc.isDisplayChangeSupported() ){
