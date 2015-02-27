@@ -1,9 +1,10 @@
 package MainApplication;
 
-import ScreenUtility.FullScreen;
 import ImageLoading.ImageLoader;
+import ScreenUtility.FullScreen;
+import org.opencv.core.Core;
+
 import java.awt.*;
-import org.opencv.core.*;
 
 /**
  * Created by danny on 11/19/14.
@@ -15,9 +16,9 @@ public class Game {
     public Game(){
         // Point to the files you would like to use for the display!
         // To switch levels all you have to do is change these three lines!
-        abovePath = "/Users/danny/Downloads/above.png";
-        belowPath = "/Users/danny/Downloads/below.png";
-        maskPath  = "/Users/danny/Downloads/mask.png";
+        abovePath = "/Users/nicolegager/Downloads/above.png";
+        belowPath = "/Users/nicolegager/Downloads/below.png";
+        maskPath  = "/Users/nicolegager/Downloads/mask.png";
 
         // Create an ImageLoader to load all of the pictures for us.
         imgLoader = new ImageLoader( abovePath, belowPath, maskPath );
