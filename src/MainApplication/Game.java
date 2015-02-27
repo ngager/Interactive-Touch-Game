@@ -1,6 +1,6 @@
 package MainApplication;
 
-import ScreenUtility.FullScreen;
+import GameScreens.MainGameScreen;
 import ImageLoading.ImageLoader;
 import java.awt.*;
 import org.opencv.core.*;
@@ -24,13 +24,9 @@ public class Game {
 
         // Res, res, color bit, refresh rate
         DisplayMode dm = new DisplayMode( 1920, 1080, 16, DisplayMode.REFRESH_RATE_UNKNOWN );
-        FullScreen w = new FullScreen( imgLoader );
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = screenSize.getWidth();
-        double height = screenSize.getHeight();
-        System.out.println( width + " x " + height );
-
+        MainGameScreen w = new MainGameScreen( imgLoader );
+        //WelcomeScreen w = new WelcomeScreen( );
         w.run( dm );
     }
 
