@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * Created by danny on 2/26/15.
@@ -70,6 +72,14 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 g.drawImage(destImage, 0, 0, null);
             }
         });
+
+        Component[] comps = this.getContentPane().getComponents();
+        int i = 0;
+        for( Component c : comps ){
+            System.out.println( i + " >> " + c.getParent() );
+            i++;
+        }
+
     }
 
     @Override
@@ -89,8 +99,6 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     public void mouseDragged(MouseEvent e) {
         org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
         globalPoint = mousePoint;
-
-        //System.out.println( mousePoint.x + ", " + mousePoint.y );
 
         double[] values = maskMat.get((int)mousePoint.y, (int)mousePoint.x);
         if( values != null ) {
