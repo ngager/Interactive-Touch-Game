@@ -117,7 +117,6 @@ public class ImageLoader {
                         }
                     }
                 }
-
             }
         }else{
            // System.out.println("NULL");
