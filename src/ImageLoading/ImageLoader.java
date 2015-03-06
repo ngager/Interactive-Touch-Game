@@ -74,7 +74,7 @@ public class ImageLoader {
         if( values != null ){
             // BLACK
             if( values[0] == 0.0 ){
-                System.out.println("black -- do nothing");
+               // System.out.println("black -- do nothing");
             // GRAY
             }else if (values[0] == 128.0) {
                 // System.out.println( "gray" );
@@ -87,7 +87,6 @@ public class ImageLoader {
 
                 for (int r = rowStart; r < rowEnd; r++) {
                     for (int c = colStart; c < colEnd; c++) {
-
                         double[] vals = reveal.get(r, c);
                         if (vals == null) {
                             //System.out.println("null");
@@ -109,7 +108,6 @@ public class ImageLoader {
 
                 for (int r = rowStart; r < rowEnd; r++) {
                     for (int c = colStart; c < colEnd; c++) {
-
                         double[] vals = reveal.get(r, c);
                         if (vals == null) {
                             //System.out.println("null");
@@ -122,18 +120,7 @@ public class ImageLoader {
 
             }
         }else{
-            System.out.println("NULL");
+           // System.out.println("NULL");
         }
     }
-    //    public void blendImages( ){
-    //        double alpha = 0.4, beta;
-    //        // src1 is aboveMat, src2 is belowMat
-    //
-    //        if( aboveMat == null || belowMat == null){
-    //            System.exit( -1 );
-    //        }
-    //        beta = 1.0 - alpha;
-    //        Core.addWeighted( aboveMat, alpha, belowMat, beta, 0.0, destination );
-    //        repaint();
-    //    }
 }
