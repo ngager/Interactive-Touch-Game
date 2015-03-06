@@ -20,10 +20,6 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 
 	}
 
-    public FullScreen() {
-
-    }
-
     // Creates a Screen object and sets it to full screen
 	public void run( DisplayMode dm ){
 		setFont( new Font("Arial", Font.PLAIN, 24) );
