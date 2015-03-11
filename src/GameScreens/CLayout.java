@@ -19,7 +19,6 @@ public class CLayout extends JFrame{
     JButton button2 = new JButton("Switch to panel 3");
     JButton button3 = new JButton("Switch to panel 1");
 
-
     // Container panel
     JPanel panelContainer = new JPanel();
     //WelcomeScreen welcomePanel = new WelcomeScreen();
