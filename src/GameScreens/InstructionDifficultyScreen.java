@@ -15,6 +15,7 @@ public class InstructionDifficultyScreen extends JPanel{
 
     JButton button1, button2, button3;
 
+    
     public InstructionDifficultyScreen() {
         //this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setLayout( new BorderLayout() );
