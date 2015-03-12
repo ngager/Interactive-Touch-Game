@@ -15,24 +15,22 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by danny vasta on 2/26/15.
+ * Created by danny on 2/26/15.
  */
-public class InstructionDifficultyScreen extends JPanel implements MouseListener, ActionListener{
+public class ResultsScreen extends JPanel implements MouseListener, ActionListener{
     // Path to background image
-    Image background = Toolkit.getDefaultToolkit().createImage("/Users/danny/Downloads/hurricane_instructions.png");
+    Image background = Toolkit.getDefaultToolkit().createImage("/Users/danny/Downloads/hurricane_template_score.png");
     // BufferedImages to be used as button icons
     BufferedImage buttonIcon1 = null, buttonIcon2 = null, buttonIcon3 = null;
-    // THree play game buttons
-    JButton button1, button2, button3;
+    // Three play game buttons
+    JButton button1;
 
-    public InstructionDifficultyScreen() {
+    public ResultsScreen() {
         addMouseListener( this );
         this.setLayout( null );
         // Load the icons for the buttons
         try{
-            buttonIcon1 = ImageIO.read(new File("/Users/danny/Downloads/level1Button.png"));
-            buttonIcon2 = ImageIO.read(new File("/Users/danny/Downloads/level2Button.png"));
-            buttonIcon3 = ImageIO.read(new File("/Users/danny/Downloads/level3Button.png"));
+            buttonIcon1 = ImageIO.read(new File("/Users/danny/Downloads/playAgain.png"));
         }catch( IOException e ){
 
         }
@@ -42,44 +40,22 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
         button1 = new JButton(new ImageIcon(buttonIcon1));
         button1.setBorder(BorderFactory.createEmptyBorder());
         button1.setContentAreaFilled(false);
-        button1.setBounds(1650, 400, 217, 150);
+        button1.setBounds(843, 847, 217, 150);
         button1.addActionListener( this );
 
-        button2 = new JButton(new ImageIcon(buttonIcon2));
-        button2.setBorder(BorderFactory.createEmptyBorder());
-        button2.setContentAreaFilled(false);
-        button2.setBounds(1650, 625, 217, 150);
-        button2.addActionListener(this);
-
-        button3 = new JButton(new ImageIcon(buttonIcon3));
-        button3.setBorder(BorderFactory.createEmptyBorder());
-        button3.setContentAreaFilled(false);
-        button3.setBounds( 1650, 846, 217, 150 );
-        button3.addActionListener( this );
-
         this.add( button1 );
-        this.add( button2 );
-        this.add( button3 );
     }
 
     // Right now just starts a game with each button -- later will change difficulty based on button
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == button1){
-            //new Game();
-        }else if( e.getSource() == button2){
-            new Game();
-        }else if( e.getSource() == button3){
-            new Game();
+
         }
     }
 
     public JButton getButton( String button ){
         if( button.equals("1"))
             return button1;
-        else if( button.equals("2"))
-            return button2;
-        else if( button.equals("3"))
-            return button3;
         return null;
     }
 

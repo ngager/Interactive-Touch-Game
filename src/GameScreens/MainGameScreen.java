@@ -1,14 +1,21 @@
 package GameScreens;
 
 import ImageLoading.ImageLoader;
+import Objects.DraggableBoat;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -16,6 +23,12 @@ import java.util.ArrayList;
  * Created by danny on 2/26/15.
  */
 public class MainGameScreen extends ScreenUtility.FullScreen {
+    private BufferedImage boatIcon = null;
+    private BufferedImage planeIcon = null;
+    private static JButton boatButton, planeButton;
+    private DraggableBoat dragBoat;
+    private int boatX = 0, boatY = 0;
+    private boolean boatActive = false, planeActive = false;
 
     // Image matrices
     private Mat aboveMat, belowMat, destination, maskMat, revealMask;
@@ -24,10 +37,28 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     private int circleRadius = 50;
     private ImageLoader imageLoader;
     public org.opencv.core.Point globalPoint;
+    private JPanel panel;
 
     public MainGameScreen( ImageLoader imgLoader ){
         addMouseListener(this);
         addMouseMotionListener(this);
+        try{
+            boatIcon = ImageIO.read(new File("/Users/danny/Downloads/boat_icon1.png"));
+            planeIcon = ImageIO.read(new File("/Users/danny/Downloads/plane_icon1.png"));
+        }catch(IOException e ){
+
+        }
+        boatButton = new JButton(new ImageIcon(boatIcon));
+        boatButton.setBorder(BorderFactory.createEmptyBorder());
+        boatButton.setContentAreaFilled(false);
+        boatButton.setBounds(1510, 10, 200, 200);
+        boatButton.addActionListener(this);
+
+        planeButton = new JButton(new ImageIcon(planeIcon));
+        planeButton.setBorder(BorderFactory.createEmptyBorder());
+        planeButton.setContentAreaFilled(false);
+        planeButton.setBounds(1710, 10, 200, 200);
+        planeButton.addActionListener(this);
 
         imageLoader = imgLoader;
         // Read images into matrices
@@ -45,7 +76,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         destImage = imageLoader.getImage ( destination );
 
         // JPanel
-        this.getContentPane().add(new JPanel() {
+        this.getContentPane().add(panel = new JPanel() {
             @Override
             public void update(Graphics g) {
                 paintComponent(g);
@@ -54,58 +85,71 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
             // Displays the screen
             public void paintComponent(Graphics g) {
 
-                // If g is a Graphics2D object, smooth out the text via java Rendering
-                if (g instanceof Graphics2D) {
-                    Graphics2D g2 = (Graphics2D) g;
-                    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                }
-                super.paintComponent(g);
-//				setBorder(new CompoundBorder(
-//						BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLUE),
-//						BorderFactory.createMatteBorder(1, 1, 1, 1, Color.RED)));
+//                // If g is a Graphics2D object, smooth out the text via java Rendering
+//                if (g instanceof Graphics2D) {
+//                }
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+                super.paintComponent(g2);
                 // Calculate the new pixels
                 if (globalPoint != null)
                     imageLoader.checkPixels(revealMask, destination, globalPoint);
                 // Render the new image
                 destImage = imageLoader.getImage(destination);
                 // Draw it
-                g.drawImage(destImage, 0, 0, null);
+                g2.drawImage(destImage, 0, 0, null);
+                g2.drawImage(dragBoat.img, boatX, boatY, null);
+                dragBoat.setBounds(boatX, boatY, 200, 200);
             }
         });
-
-        Component[] comps = this.getContentPane().getComponents();
-        int i = 0;
-        for( Component c : comps ){
-            System.out.println( i + " >> " + c.getParent() );
-            i++;
-        }
-
+        panel.setLayout(null);
+        panel.add( boatButton );
+        panel.add( planeButton );
+        dragBoat = new DraggableBoat();
+        dragBoat.setBounds( 500, 500, 200, 200);
+        boatX = dragBoat.getX();
+        boatY = dragBoat.getY();
+        panel.add( dragBoat );
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
-        globalPoint = mousePoint;
-
-        double[] values = maskMat.get((int) mousePoint.y, (int) mousePoint.x);
-        if( values != null ) {
-            Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
-        }
-
-        repaint((int) mousePoint.x - circleRadius, (int) mousePoint.y - circleRadius, circleRadius * 2, circleRadius * 2);
+//        org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
+//        globalPoint = mousePoint;
+//
+//        double[] values = maskMat.get((int) mousePoint.y, (int) mousePoint.x);
+//        if( values != null ) {
+//            Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
+//        }
+//
+//        repaint((int) mousePoint.x - circleRadius, (int) mousePoint.y - circleRadius, circleRadius * 2, circleRadius * 2);
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
-        globalPoint = mousePoint;
+        if( dragBoat.getBounds().contains(e.getPoint()) && boatActive) {
+            org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
+            globalPoint = mousePoint;
 
-        double[] values = maskMat.get((int)mousePoint.y, (int)mousePoint.x);
-        if( values != null ) {
-            Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
+            double[] values = maskMat.get((int) mousePoint.y, (int) mousePoint.x);
+            if (values != null) {
+                Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
+            }
+            boatX = e.getX() - 100;
+            boatY = e.getY() - 100;
+            //repaint((int) mousePoint.x - circleRadius, (int) mousePoint.y - circleRadius, circleRadius * 2, circleRadius * 2);
+            repaint();
         }
-
-        repaint((int) mousePoint.x - circleRadius, (int) mousePoint.y - circleRadius, circleRadius * 2, circleRadius * 2);
     }
 
+    public void actionPerformed(ActionEvent e) {
+        if( e.getSource() == boatButton ){
+            boatActive = true;
+            planeActive = false;
+        }else if( e.getSource() == planeButton){
+            boatActive = false;
+            planeActive = true;
+        }
+    }
 }

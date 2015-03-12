@@ -3,7 +3,7 @@ package MainApplication;
 import GameScreens.MainGameScreen;
 import ImageLoading.ImageLoader;
 import ScreenUtility.FullScreen;
-import GameScreens.WelcomeScreen;
+//import GameScreens.WelcomeScreen;
 import org.opencv.core.Core;
 
 import java.awt.*;
