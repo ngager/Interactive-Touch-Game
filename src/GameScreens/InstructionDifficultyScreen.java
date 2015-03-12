@@ -3,69 +3,97 @@ package GameScreens;
 import MainApplication.Game;
 import org.opencv.core.Core;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by nicolegager on 2/26/15.
  */
-public class InstructionDifficultyScreen extends JPanel{
-
+public class InstructionDifficultyScreen extends JPanel implements MouseListener, ActionListener{
+    // Path to background image
+    Image background = Toolkit.getDefaultToolkit().createImage("/Users/danny/Downloads/hurricane_instructions.png");
+    // BufferedImages to be used as button icons
+    BufferedImage buttonIcon1 = null, buttonIcon2 = null, buttonIcon3 = null;
+    // THree play game buttons
     JButton button1, button2, button3;
 
-    
     public InstructionDifficultyScreen() {
-        //this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setLayout( new BorderLayout() );
-//        button1 = new JButton( "Easy" );
-//        button2 = new JButton( "Medium" );
-//        button3 = new JButton( "Hard" );
-//
-//        button1.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        button2.setAlignmentX( Component.CENTER_ALIGNMENT );
-//        button3.setAlignmentX( Component.CENTER_ALIGNMENT );
-//
-//        this.add(button1);
-//        this.add(Box.createVerticalStrut(200));
-//        this.add(button2);
-//        this.add(Box.createVerticalStrut(200));
-//        this.add(button3);
-//
-//        button1.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                new Game();
-//            }
-//        });
-//
-//        button2.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                new Game();
-//            }
-//        });
-//
-//        button3.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                new Game();
-//            }
-//        });
-//
-//        this.add( button1 );
-//        this.add( button2 );
-//        this.add( button3 );
-        ImageIcon image = new ImageIcon("Users/danny/Downloads/hurricane_instructions.png");
-        JLabel label = new JLabel("", image, JLabel.CENTER);
-        this.add( label, BorderLayout.CENTER );
+        addMouseListener( this );
+        this.setLayout( null );
+        // Load the icons for the buttons
+        try{
+            buttonIcon1 = ImageIO.read(new File("/Users/danny/Downloads/level1Button.png"));
+            buttonIcon2 = ImageIO.read(new File("/Users/danny/Downloads/level2Button.png"));
+            buttonIcon3 = ImageIO.read(new File("/Users/danny/Downloads/level3Button.png"));
+        }catch( IOException e ){
+
+        }
+        // Make each button, hardcoded to a certain location
+        // Locations and sizes were found using Photoshop
+        //    * Can result in a problem with changing these screens later on?
+        button1 = new JButton(new ImageIcon(buttonIcon1));
+        button1.setBorder(BorderFactory.createEmptyBorder());
+        button1.setContentAreaFilled(false);
+        button1.setBounds(1650, 400, 217, 150);
+        button1.addActionListener( this );
+
+        button2 = new JButton(new ImageIcon(buttonIcon2));
+        button2.setBorder(BorderFactory.createEmptyBorder());
+        button2.setContentAreaFilled(false);
+        button2.setBounds(1650, 625, 217, 150);
+        button2.addActionListener(this);
+
+        button3 = new JButton(new ImageIcon(buttonIcon3));
+        button3.setBorder(BorderFactory.createEmptyBorder());
+        button3.setContentAreaFilled(false);
+        button3.setBounds( 1650, 846, 217, 150 );
+        button3.addActionListener( this );
+
+        this.add( button1 );
+        this.add( button2 );
+        this.add( button3 );
     }
 
-    public static void main( String[] args ){
-        System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-        //DisplayMode dm = new DisplayMode( 1920, 1080, 16, DisplayMode.REFRESH_RATE_UNKNOWN );
-        new InstructionDifficultyScreen();
-        //s.run(dm);
+    // Right now just starts a game with each button -- later will change difficulty based on button
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == button1){
+            new Game();
+        }else if( e.getSource() == button2){
+            new Game();
+        }else if( e.getSource() == button3){
+            new Game();
+        }
     }
+    // Very fast and easy way to set a background image
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+    }
+
+    // Don't even need to check mouse click coordinates because the buttons take care of it
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        System.out.println( e.getPoint() );
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
 }

@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Created by danny on 3/1/15.
@@ -18,7 +20,6 @@ public class CLayout extends JFrame{
     JButton button1 = new JButton("Switch to panel 2");
     JButton button2 = new JButton("Switch to panel 3");
     JButton button3 = new JButton("Switch to panel 1");
-
 
     // Container panel
     JPanel panelContainer = new JPanel();
@@ -105,4 +106,5 @@ public class CLayout extends JFrame{
         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
         new CLayout();
     }
+
 }
