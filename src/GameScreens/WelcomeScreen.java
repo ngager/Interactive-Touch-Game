@@ -46,10 +46,10 @@ public class WelcomeScreen extends JPanel implements MouseListener, ActionListen
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        System.out.println("Pressed on button: (" + e.getX() + "," + e.getY() + ")");
-        if(e.getX() > 880 && e.getX() < 1030 && e.getY() < 850 && e.getY() > 1000){
-            System.out.println("Pressed on button");
-            layout.show( panelContainer, "1");        }
+        //System.out.println("Pressed on button: (" + e.getX() + "," + e.getY() + ")");
+        //if((e.getX() > 880 && e.getX() < 1030) && (e.getY() < 850 && e.getY() > 1000)){
+          //  System.out.println("Pressed on button");
+            layout.show( panelContainer, "2");
 
 
     }
