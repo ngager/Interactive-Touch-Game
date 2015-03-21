@@ -1,11 +1,12 @@
 package GameScreens;
-import ImageLoading.ImageLoader;
 import org.opencv.core.Core;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Created by danny on 3/1/15.
@@ -16,65 +17,70 @@ public class CLayout extends JFrame{
     GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
     GraphicsDevice vc = env.getDefaultScreenDevice();
 
-    JPanel panelCont = new JPanel();
- //   WelcomeScreen welcomePanel = new WelcomeScreen();
-    DifficultyScreen panel2 = new DifficultyScreen();
-    JPanel panel3 = new JPanel();
-    JPanel buttonPanel = new JPanel();
     JButton button1 = new JButton("Switch to panel 2");
     JButton button2 = new JButton("Switch to panel 3");
     JButton button3 = new JButton("Switch to panel 1");
+
+    // Container panel
+    JPanel panelContainer = new JPanel();
+    InstructionDifficultyScreen difficultyPanel = new InstructionDifficultyScreen();
+    JPanel panel3 = new JPanel();
+
     CardLayout cl = new CardLayout();
+    WelcomeScreen welcomePanel = new WelcomeScreen(cl, panelContainer);
 
     public CLayout(){
-        panelCont.setLayout( cl );
-        
+        panelContainer.setLayout( cl );
+
         panel3.setLayout( new BoxLayout(panel3, BoxLayout.Y_AXIS) );
 
         button1.setAlignmentX(Component.CENTER_ALIGNMENT);
         button2.setAlignmentX( Component.CENTER_ALIGNMENT );
         button3.setAlignmentX( Component.CENTER_ALIGNMENT );
 
-//        welcomePanel.add( button1 );
-        panel2.add( button2 );
+       // welcomePanel.add( button1 );
         panel3.add( button3 );
 
-        buttonPanel.setBackground( Color.CYAN );
- //       welcomePanel.setBackground( Color.RED );
-        panel2.setBackground( Color.GREEN);
         panel3.setBackground( Color.BLUE);
 
-        panelCont.add( buttonPanel, "0");
- //       panelCont.add( welcomePanel, "1" );
-        panelCont.add( panel2, "2" );
-        panelCont.add( panel3, "3" );
+        /**
+         * add each panel to the panelContainer
+         */
+        panelContainer.add( welcomePanel, "1" );
+        panelContainer.add( difficultyPanel, "2" );
+        panelContainer.add( panel3, "3" );
 
-        cl.show( panelCont, "1");
+        /**
+         * show the starting panel (welcome screen number)
+         */
+        cl.show( panelContainer, "1");
 
+        /**
+         * if we add buttons to this class to it here (probably won't use)
+         */
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cl.show( panelCont, "2" );
+                cl.show( panelContainer, "1" );
             }
         });
 
         button2.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed( ActionEvent e ){
-                cl.show( panelCont, "3" );
+                cl.show( panelContainer, "3" );
             }
         });
 
         button3.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed( ActionEvent e ){
-                cl.show( panelCont, "1" );
+                cl.show( panelContainer, "2" );
             }
         });
 
-        panelCont.setSize(1920, 1080);
-        this.add(panelCont);
-
+        panelContainer.setSize(1920, 1080);
+        this.add(panelContainer);
         setFullScreen( dm );
     }
 
@@ -97,7 +103,7 @@ public class CLayout extends JFrame{
     }
     public static void main( String[] args ){
         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-
-        CLayout s = new CLayout();
+        new CLayout();
     }
+
 }
