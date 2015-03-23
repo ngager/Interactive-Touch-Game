@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 public class ResultsScreen extends JPanel implements MouseListener, ActionListener{
     // Path to background image
-    Image background = Toolkit.getDefaultToolkit().createImage("/Users/danny/Downloads/hurricane_template_score.png");
+    Image background = Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("hurricane_template_score.png"));
     // BufferedImages to be used as button icons
     BufferedImage buttonIcon1 = null, buttonIcon2 = null, buttonIcon3 = null;
     // Three play game buttons
@@ -30,7 +30,7 @@ public class ResultsScreen extends JPanel implements MouseListener, ActionListen
         this.setLayout( null );
         // Load the icons for the buttons
         try{
-            buttonIcon1 = ImageIO.read(new File("/Users/danny/Downloads/playAgain.png"));
+            buttonIcon1 = ImageIO.read(getClass().getClassLoader().getResource("playAgainButton.png"));
         }catch( IOException e ){
 
         }

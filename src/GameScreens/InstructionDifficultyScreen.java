@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 public class InstructionDifficultyScreen extends JPanel implements MouseListener, ActionListener{
     // Path to background image
-    Image background = Toolkit.getDefaultToolkit().createImage("/Users/danny/Downloads/hurricane_instructions.png");
+    Image background = Toolkit.getDefaultToolkit().createImage( getClass().getClassLoader().getResource("hurricane_instructions.png") );
     // BufferedImages to be used as button icons
     BufferedImage buttonIcon1 = null, buttonIcon2 = null, buttonIcon3 = null;
     // THree play game buttons
@@ -30,9 +30,9 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
         this.setLayout( null );
         // Load the icons for the buttons
         try{
-            buttonIcon1 = ImageIO.read(new File("/Users/danny/Downloads/level1Button.png"));
-            buttonIcon2 = ImageIO.read(new File("/Users/danny/Downloads/level2Button.png"));
-            buttonIcon3 = ImageIO.read(new File("/Users/danny/Downloads/level3Button.png"));
+            buttonIcon1 = ImageIO.read( getClass().getClassLoader().getResourceAsStream("level1Button.png") );
+            buttonIcon2 = ImageIO.read( getClass().getClassLoader().getResourceAsStream("level2Button.png") );
+            buttonIcon3 = ImageIO.read( getClass().getClassLoader().getResourceAsStream("level3Button.png") );
         }catch( IOException e ){
 
         }

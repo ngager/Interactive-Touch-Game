@@ -17,27 +17,27 @@ public class CLayout extends JFrame{
     private GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
     private GraphicsDevice vc = env.getDefaultScreenDevice();
 
+    public CardLayout cl = new CardLayout();
     // Container panel
     private JPanel panelContainer = new JPanel();
-    //WelcomeScreen welcomePanel = new WelcomeScreen();
+    WelcomeScreen welcomePanel = new WelcomeScreen(cl, panelContainer);
     private InstructionDifficultyScreen difficultyPanel = new InstructionDifficultyScreen();
     private ResultsScreen resultsPanel = new ResultsScreen();
     private JButton button1 = difficultyPanel.getButton( "1" );
     private JButton button2 = resultsPanel.getButton( "1" );
-    public CardLayout cl = new CardLayout();
 
     public CLayout(){
         panelContainer.setLayout(cl);
         /**
          * add each panel to the panelContainer
          */
-        // panelContainer.add( welcomePanel, "1" );
+        panelContainer.add( welcomePanel, "1" );
         panelContainer.add( difficultyPanel, "2" );
         panelContainer.add(resultsPanel, "3");
         /**
          * show the starting panel (welcome screen number)
          */
-        cl.show( panelContainer, "2");
+        cl.show( panelContainer, "1");
         /**
          * if we add buttons to this class to it here (probably won't use)
          */

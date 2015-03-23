@@ -29,6 +29,9 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     private DraggableBoat dragBoat;
     private int boatX = 0, boatY = 0;
     private boolean boatActive = false, planeActive = false;
+    private int curX, curY, oldX, oldY;
+    private float angle;
+    private int rotateCount = 0;
 
     // Image matrices
     private Mat aboveMat, belowMat, destination, maskMat, revealMask;
@@ -43,8 +46,8 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         addMouseListener(this);
         addMouseMotionListener(this);
         try{
-            boatIcon = ImageIO.read(new File("/Users/danny/Downloads/boat_icon1.png"));
-            planeIcon = ImageIO.read(new File("/Users/danny/Downloads/plane_icon1.png"));
+            boatIcon = ImageIO.read(getClass().getClassLoader().getResource("boat_icon1.png"));
+            planeIcon = ImageIO.read(getClass().getClassLoader().getResource("plane_icon1.png"));
         }catch(IOException e ){
 
         }
@@ -84,10 +87,6 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
 
             // Displays the screen
             public void paintComponent(Graphics g) {
-
-//                // If g is a Graphics2D object, smooth out the text via java Rendering
-//                if (g instanceof Graphics2D) {
-//                }
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
@@ -99,6 +98,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 destImage = imageLoader.getImage(destination);
                 // Draw it
                 g2.drawImage(destImage, 0, 0, null);
+                g2.rotate(Math.toRadians(angle), boatX+188, boatY+14);
                 g2.drawImage(dragBoat.img, boatX, boatY, null);
                 dragBoat.setBounds(boatX, boatY, 200, 200);
             }
@@ -129,6 +129,12 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     @Override
     public void mouseDragged(MouseEvent e) {
         if( dragBoat.getBounds().contains(e.getPoint()) && boatActive) {
+            curX = e.getX();
+            curY = e.getY();
+            if( rotateCount == 2 ){
+                calculateRotation();
+                rotateCount = 0;
+            }
             org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
             globalPoint = mousePoint;
 
@@ -136,11 +142,32 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
             if (values != null) {
                 Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
             }
-            boatX = e.getX() - 100;
-            boatY = e.getY() - 100;
+            boatX = curX - 100;
+            boatY = curY - 100;
+            //boatX = (curX - boatX);
+            //boatY = (curY - boatY);
+            if( rotateCount == 0 ){
+                oldX = curX;
+                oldY = curY;
+            }
             //repaint((int) mousePoint.x - circleRadius, (int) mousePoint.y - circleRadius, circleRadius * 2, circleRadius * 2);
+            rotateCount++;
             repaint();
         }
+    }
+
+    public void calculateRotation(){
+        int dX = curX - oldX;
+        int dY = curY - oldY;
+        //System.out.println( "dX: " + dX + " dY: " + dY );
+        //angle = (int)Math.atan2( dY, dX );
+        angle = (float) Math.toDegrees(Math.atan2(dY, dX));
+
+        if(angle < 0){
+            angle += 360;
+        }
+        System.out.println( angle );
+
     }
 
     public void actionPerformed(ActionEvent e) {

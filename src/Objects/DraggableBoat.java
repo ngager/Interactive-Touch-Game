@@ -11,7 +11,7 @@ import java.io.IOException;
  * Created by danny on 3/12/15.
  */
 public class DraggableBoat extends JComponent{
-    private static final String IMG_PATH = "/Users/danny/Downloads/boat_icon2.png";
+    private final String IMG_PATH = getClass().getClassLoader().getResource("boat_icon2.png").getPath();
     public BufferedImage img;
     ImageIcon icon;
     JLabel label;
