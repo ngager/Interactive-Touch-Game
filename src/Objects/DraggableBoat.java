@@ -10,15 +10,22 @@ import java.io.IOException;
 /**
  * Created by danny on 3/12/15.
  */
-public class DraggableBoat extends JComponent{
+public class DraggableBoat {
     private final String IMG_PATH = getClass().getClassLoader().getResource("boat_icon2.png").getPath();
     public BufferedImage img;
-    ImageIcon icon;
-    JLabel label;
+    public int x, y, height, width;
+    public Rectangle bounds;
 
-    public DraggableBoat(){
+    public DraggableBoat(int xLoc, int yLoc){
         try {
             img = ImageIO.read(new File(IMG_PATH));
+            width = img.getWidth();
+            height = img.getHeight();
+            x = xLoc;
+            y = yLoc;
+            bounds = new Rectangle( x, y, width, height );
+            bounds.setBounds( x, y, width, height );
+
         } catch (IOException e) {
             e.printStackTrace();
         }
