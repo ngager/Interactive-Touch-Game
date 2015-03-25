@@ -10,13 +10,13 @@ import java.io.IOException;
 /**
  * Created by danny on 3/12/15.
  */
-public class DraggableBoat {
-    private final String IMG_PATH = getClass().getClassLoader().getResource("draggableBoat.png").getPath();
+public class DraggablePlane {
+    private final String IMG_PATH = getClass().getClassLoader().getResource("draggablePlane.png").getPath();
     public BufferedImage img;
     public int x, y, height, width;
     public Rectangle bounds;
 
-    public DraggableBoat(int xLoc, int yLoc){
+    public DraggablePlane(int xLoc, int yLoc){
         try {
             img = ImageIO.read(new File(IMG_PATH));
             width = img.getWidth();

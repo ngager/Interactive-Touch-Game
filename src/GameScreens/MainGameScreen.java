@@ -1,23 +1,18 @@
 package GameScreens;
 
 import ImageLoading.ImageLoader;
-import Objects.DraggableBoat;
+import Objects.*;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 /**
  * Created by danny on 2/26/15.
@@ -27,12 +22,12 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     private BufferedImage planeIcon = null;
     private static JButton boatButton, planeButton;
     private DraggableBoat dragBoat;
-    private int boatX = 0, boatY = 0;
+    private DraggablePlane dragPlane;
     private boolean boatActive = false, planeActive = false;
     private int curX, curY, oldX, oldY;
     private float angle;
     private int rotateCount = 0;
-    private boolean onLand = false;
+    private boolean onLand = false, onShallow = false, onDeep = false;
 
     // Image matrices
     private Mat aboveMat, belowMat, destination, maskMat, revealMask;
@@ -53,6 +48,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         }catch(IOException e ){
 
         }
+
         boatButton = new JButton(new ImageIcon(boatIcon));
         boatButton.setBorder( BorderFactory.createLineBorder( Color.RED ));
         //boatButton.setContentAreaFilled(false);
@@ -101,28 +97,46 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     imageLoader.checkPixels(revealMask, destination, globalPoint);
                 // Render the new image
                 destImage = imageLoader.getImage(destination);
-                // Draw it
+                // Draw background
                 g2.drawImage(destImage, 0, 0, null);
-
+                // Draw plane and boat in beginning
+                if( !boatActive && !planeActive ){
+                    // Draw plane
+                    g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
+                    dragPlane.bounds.setBounds(dragPlane.x, dragPlane.y, dragPlane.width, dragPlane.height);
+                    // Draw boat
+                    g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
+                    dragBoat.bounds.setBounds(dragBoat.x, dragBoat.y, dragBoat.width, dragBoat.height);
+                }
                 // Need to save the old transformation or else the buttons get messed up
                 AffineTransform oldXForm = g2.getTransform();
-                if( !onLand )
-                    g2.rotate(Math.toRadians(angle), dragBoat.x + 100, dragBoat.y + 100);
-                g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
-                dragBoat.bounds.setBounds(dragBoat.x, dragBoat.y, dragBoat.width, dragBoat.height);
-                // Restore to normal transformation
-                g2.setTransform( oldXForm );
+                if( boatActive ){
+                    if( !onLand && !onShallow)
+                        g2.rotate(Math.toRadians(angle), dragBoat.x + 100, dragBoat.y + 100);
+                    g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
+                    dragBoat.bounds.setBounds(dragBoat.x, dragBoat.y, dragBoat.width, dragBoat.height);
+                    // Restore to normal transformation
+                    g2.setTransform( oldXForm );
+                    g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
+                    //dragPlane.bounds.setBounds(dragPlane.x, dragPlane.y, dragPlane.width, dragPlane.height);
+                }else if( planeActive ){
+                    if( !onLand && !onDeep)
+                        g2.rotate(Math.toRadians(angle), dragPlane.x + 100, dragPlane.y + 100);
+                    g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
+                    dragPlane.bounds.setBounds(dragPlane.x, dragPlane.y, dragPlane.width, dragPlane.height);
+                    // Restore to normal transformation
+                    g2.setTransform( oldXForm );
+                    g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
+                   // dragBoat.bounds.setBounds(dragBoat.x, dragBoat.y, dragBoat.width, dragBoat.height);
+                }
             }
         });
 
         panel.setLayout(null);
-        panel.add(boatButton);
+        panel.add( boatButton );
         panel.add( planeButton );
-        dragBoat = new DraggableBoat(500, 500);
-        //dragBoat.setBounds( 500, 500, 200, 200);
-        boatX = dragBoat.x;
-        boatY = dragBoat.y;
-        //panel.add( dragBoat );
+        dragBoat = new DraggableBoat(1000, 500);
+        dragPlane = new DraggablePlane(500, 500);
     }
 
     @Override
@@ -140,13 +154,22 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
 
             double[] values = maskMat.get((int) mousePoint.y, (int) mousePoint.x);
             if (values != null) {
+                // Check if on land
                 if( values[0] == 0.0 && values[1] == 0.0 && values[2] == 0.0 ){
                     onLand = true;
                 }else onLand = false;
+                // Check if on shallow water
+                if( values[0] == 125.0 && values[1] == 125.0 && values[2] == 125.0 ){
+                    onShallow = true;
+                }else onShallow = false;
+                // Check if on deep
+                if( values[0] == 255.0 && values[1] == 255.0 && values[2] == 255.0 ){
+                    onDeep = true;
+                }else onDeep = false;
                 Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
             }
-            // Make sure we are not dragging the boat over land
-            if( !onLand ) {
+            // Make sure we are not dragging the boat over land or shallow water
+            if( !onLand && !onShallow ) {
                 dragBoat.x = curX - 100;
                 dragBoat.y = curY - 100;
             }
@@ -155,7 +178,45 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 oldX = curX;
                 oldY = curY;
             }
-            //repaint((int) mousePoint.x - circleRadius, (int) mousePoint.y - circleRadius, circleRadius * 2, circleRadius * 2);
+            rotateCount++;
+            repaint();
+        }else if( dragPlane.bounds.getBounds().contains(e.getPoint()) && planeActive ){
+            curX = e.getX();
+            curY = e.getY();
+            // Rotate every other pixel
+            if( rotateCount == 1 ){
+                calculateRotation();
+                rotateCount = 0;
+            }
+            org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
+            globalPoint = mousePoint;
+
+            double[] values = maskMat.get((int) mousePoint.y, (int) mousePoint.x);
+            if (values != null) {
+                // Check if on land
+                if( values[0] == 0.0 && values[1] == 0.0 && values[2] == 0.0 ){
+                    onLand = true;
+                }else onLand = false;
+                // Check if on shallow water
+                if( values[0] == 125.0 && values[1] == 125.0 && values[2] == 125.0 ){
+                    onShallow = true;
+                }else onShallow = false;
+                // Check if on deep
+                if( values[0] == 255.0 && values[1] == 255.0 && values[2] == 255.0 ){
+                    onDeep = true;
+                }else onDeep = false;
+                Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
+            }
+            // Make sure we are not dragging the plane over alnd or deep water
+            if( !onLand && !onDeep ) {
+                dragPlane.x = curX - 100;
+                dragPlane.y = curY - 100;
+            }
+
+            if( rotateCount == 0 ){
+                oldX = curX;
+                oldY = curY;
+            }
             rotateCount++;
             repaint();
         }

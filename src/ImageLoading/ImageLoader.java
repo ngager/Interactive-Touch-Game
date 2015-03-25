@@ -76,7 +76,7 @@ public class ImageLoader {
             if( values[0] == 0.0 ){
                // System.out.println("black -- do nothing");
             // GRAY
-            }else if (values[0] == 128.0) {
+            }else if (values[0] == 125.0) {
                 // System.out.println( "gray" );
                 // Have to only check the rows that we need around the circle!
                 int rowStart = (int) mousePoint.y - 50;
