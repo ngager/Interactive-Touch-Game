@@ -7,12 +7,10 @@ import org.opencv.core.Scalar;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
-public class FullScreen extends JFrame implements MouseListener, MouseMotionListener{
+public class FullScreen extends JFrame implements MouseListener, MouseMotionListener, ActionListener{
 	private static final long serialVersionUID = 1L;
 	private Screen s;
 
@@ -64,6 +62,11 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
 
 	}
 }
