@@ -1,64 +1,78 @@
 package GameScreens;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
 
 /**
  * Created by nicolegager on 2/26/15.
  */
 public class WelcomeScreen extends JPanel implements MouseListener, ActionListener{
 
-    Image background = Toolkit.getDefaultToolkit().createImage("/Users/cypher/Downloads/hurricane_template_splash.png");
+    Image background;
     JButton start;
     CardLayout layout;
     JPanel panelContainer;
+    JTextField inputField;
+    Boolean enableScreenChange;
 
     public WelcomeScreen(CardLayout c, JPanel panelContainer) {
+
+
         addMouseListener( this );
         this.setLayout( null );
         this.layout = c;
         this.panelContainer = panelContainer;
+        enableScreenChange = false;
 
-       /* start = new JButton("start!!");
-        start.setBorder(BorderFactory.createEmptyBorder());
-        start.setContentAreaFilled(false);
-        start.setBounds(1650, 400, 217, 150);
-        start.addActionListener( this );
-        this.add(start);*/
+        inputField = new JTextField("Enter Name");
+        inputField.setVisible(true);
+        inputField.setBounds(500, 900, 200, 50);
+        inputField.addActionListener(this);
+        this.add(inputField);
+
 
     }
 
     protected void paintComponent(Graphics g) {
+
         super.paintComponent(g);
-        g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
-        g.fillRect(880,850,150,150);
+        try{
+            background = ImageIO.read(getClass().getClassLoader().getResourceAsStream("hurricane_template_splash.png"));
+            g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+        }catch(IOException e ){
+
+        }
+
+
+
     }
 
     public void actionPerformed(ActionEvent e) {
+        enableScreenChange = true;
+    }
 
+    public JTextField getTextField( ){
+        return inputField;
     }
 
 
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        //System.out.println("Pressed on button: (" + e.getX() + "," + e.getY() + ")");
-        //if((e.getX() > 880 && e.getX() < 1030) && (e.getY() < 850 && e.getY() > 1000)){
-          //  System.out.println("Pressed on button");
-            layout.show( panelContainer, "2");
-
-
+        if(enableScreenChange) {
+            layout.show(panelContainer, "2");
+        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(e.getX() > 880 && e.getX() < 1030 && e.getY() < 850 && e.getY() > 1000){
-            System.out.println("Pressed on button");
-        }
 
     }
 
