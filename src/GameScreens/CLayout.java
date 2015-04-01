@@ -25,6 +25,8 @@ public class CLayout extends JFrame{
     private ResultsScreen resultsPanel = new ResultsScreen();
     private JButton button1 = difficultyPanel.getButton( "1" );
     private JButton button2 = resultsPanel.getButton( "1" );
+    private JTextField inputField = welcomePanel.getTextField();
+
 
     public CLayout(){
         panelContainer.setLayout(cl);
@@ -33,7 +35,7 @@ public class CLayout extends JFrame{
          */
         panelContainer.add( welcomePanel, "1" );
         panelContainer.add( difficultyPanel, "2" );
-        panelContainer.add(resultsPanel, "3");
+        panelContainer.add( resultsPanel, "3");
         /**
          * show the starting panel (welcome screen number)
          */

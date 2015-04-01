@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 public class InstructionDifficultyScreen extends JPanel implements MouseListener, ActionListener{
     // Path to background image
-    Image background = Toolkit.getDefaultToolkit().createImage( getClass().getClassLoader().getResource("hurricane_instructions.png") );
+    Image background = Toolkit.getDefaultToolkit().createImage( getClass().getClassLoader().getResource("hurricane_template_instructions.png") );
     // BufferedImages to be used as button icons
     BufferedImage buttonIcon1 = null, buttonIcon2 = null, buttonIcon3 = null;
     // THree play game buttons

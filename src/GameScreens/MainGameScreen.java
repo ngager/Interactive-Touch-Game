@@ -94,7 +94,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
 
                 // Calculate the new pixels for the background
                 if (globalPoint != null)
-                    imageLoader.checkPixels(revealMask, destination, globalPoint);
+                    imageLoader.checkPixels(revealMask, destination, globalPoint, boatActive, planeActive);
                 // Render the new image
                 destImage = imageLoader.getImage(destination);
                 // Draw background
@@ -207,7 +207,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 }else onDeep = false;
                 Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
             }
-            // Make sure we are not dragging the plane over alnd or deep water
+            // Make sure we are not dragging the plane over land or deep water
             if( !onLand && !onDeep ) {
                 dragPlane.x = curX - 100;
                 dragPlane.y = curY - 100;

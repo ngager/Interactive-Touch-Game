@@ -66,9 +66,9 @@ public class ImageLoader {
         return image;
     }
 
-    public void checkPixels(Mat reveal, Mat destination, org.opencv.core.Point mousePoint) {
+    public void checkPixels(Mat reveal, Mat destination, org.opencv.core.Point mousePoint, boolean boatActive, boolean planeActive) {
         int mouseX = (int) mousePoint.x, mouseY = (int) mousePoint.y;
-
+int count = 0;
         // Check mask value at drag
         double[] values = maskMat.get(mouseY, mouseX);
         if( values != null ){
@@ -88,10 +88,11 @@ public class ImageLoader {
                 for (int r = rowStart; r < rowEnd; r++) {
                     for (int c = colStart; c < colEnd; c++) {
                         double[] vals = reveal.get(r, c);
+                        double [] valid = maskMat.get(r, c);
                         if (vals == null) {
                             //System.out.println("null");
                         }
-                        else if (vals[0] == 255.0) {
+                        else if (vals[0] == 255.0 && planeActive && valid[0] == 125.0 && valid[1] == 125.0 && valid[2] == 125.0) {
                             destination.put(r, c, belowMat.get(r, c));
                         }
                     }
@@ -109,10 +110,10 @@ public class ImageLoader {
                 for (int r = rowStart; r < rowEnd; r++) {
                     for (int c = colStart; c < colEnd; c++) {
                         double[] vals = reveal.get(r, c);
+                        double [] valid = maskMat.get(r, c);
                         if (vals == null) {
-                            //System.out.println("null");
                         }
-                        else if (vals[0] == 255.0) {
+                        else if (vals[0] == 255.0 && boatActive && valid[0] == 255.0 && valid[1] == 255.0 && valid[2] == 255.0) {
                             destination.put(r, c, belowMat.get(r, c));
                         }
                     }
