@@ -2,11 +2,11 @@ package MainApplication;
 
 import GameScreens.MainGameScreen;
 import ImageLoading.ImageLoader;
-import ScreenUtility.FullScreen;
-//import GameScreens.WelcomeScreen;
 import org.opencv.core.Core;
 
 import java.awt.*;
+
+//import GameScreens.WelcomeScreen;
 
 /**
  * Created by danny on 11/19/14.
@@ -18,18 +18,14 @@ public class Game {
     public Game(){
         // Point to the files you would like to use for the display!
         // To switch levels all you have to do is change these three lines!
-        abovePath = getClass().getClassLoader().getResource("Harbor.png").getPath();
-        belowPath = getClass().getClassLoader().getResource("HarborBelow.png").getPath();
-        maskPath  = getClass().getClassLoader().getResource("HarborMask.png").getPath();
-
+        abovePath = getClass().getClassLoader().getResource("above.png").getPath();
+        belowPath = getClass().getClassLoader().getResource("below.png").getPath();
+        maskPath  = getClass().getClassLoader().getResource("mask.png").getPath();
         // Create an ImageLoader to load all of the pictures for us.
         imgLoader = new ImageLoader( abovePath, belowPath, maskPath );
-
         // Res, res, color bit, refresh rate
-        DisplayMode dm = new DisplayMode( 1920, 1080, 16, DisplayMode.REFRESH_RATE_UNKNOWN );
-
+        DisplayMode dm = new DisplayMode( 1920, 1080, DisplayMode.BIT_DEPTH_MULTI, DisplayMode.REFRESH_RATE_UNKNOWN );
         MainGameScreen w = new MainGameScreen( imgLoader );
-        //WelcomeScreen w = new WelcomeScreen( );
         w.run( dm );
     }
 

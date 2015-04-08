@@ -1,14 +1,8 @@
 package ScreenUtility;
 
-import ImageLoading.ImageLoader;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 
 public class FullScreen extends JFrame implements MouseListener, MouseMotionListener, ActionListener{
 	private static final long serialVersionUID = 1L;
@@ -20,7 +14,6 @@ public class FullScreen extends JFrame implements MouseListener, MouseMotionList
 
     // Creates a Screen object and sets it to full screen
 	public void run( DisplayMode dm ){
-		setFont( new Font("Arial", Font.PLAIN, 24) );
 		s = new Screen();
 		try {
 			s.setFullScreen(dm, this);

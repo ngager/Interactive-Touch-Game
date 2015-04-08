@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
 /**
@@ -16,28 +15,15 @@ import java.io.IOException;
 public class WelcomeScreen extends JPanel implements MouseListener, ActionListener{
 
     Image background;
-    JButton start;
     CardLayout layout;
     JPanel panelContainer;
     JTextField inputField;
-    Boolean enableScreenChange;
 
     public WelcomeScreen(CardLayout c, JPanel panelContainer) {
-
-
         addMouseListener( this );
         this.setLayout( null );
         this.layout = c;
         this.panelContainer = panelContainer;
-        enableScreenChange = false;
-
-        inputField = new JTextField("Enter Name");
-        inputField.setVisible(true);
-        inputField.setBounds(500, 900, 200, 50);
-        inputField.addActionListener(this);
-        this.add(inputField);
-
-
     }
 
     protected void paintComponent(Graphics g) {
@@ -49,26 +35,18 @@ public class WelcomeScreen extends JPanel implements MouseListener, ActionListen
         }catch(IOException e ){
 
         }
-
-
-
     }
 
-    public void actionPerformed(ActionEvent e) {
-        enableScreenChange = true;
-    }
-
-    public JTextField getTextField( ){
-        return inputField;
-    }
+    public void actionPerformed(ActionEvent e) {}
 
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
-        if(enableScreenChange) {
+        int x = e.getX();
+        int y = e.getY();
+        if( (x >= 845 && x <= 1060) && (y > 845 && y < 990) ){
             layout.show(panelContainer, "2");
-        }
+       }
     }
 
     @Override

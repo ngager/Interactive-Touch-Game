@@ -1,10 +1,7 @@
 package ScreenUtility;
 
-import java.awt.*;
 import javax.swing.*;
-
-import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
+import java.awt.*;
 
 public class Screen {
 	// Control the video card / monitor
@@ -22,11 +19,9 @@ public class Screen {
 	public void setFullScreen( DisplayMode dm, JFrame window ){
 		window.setUndecorated( true );
 		window.setResizable(false);
-
 		window.setSize( 1920, 1080 );
 		vc.setFullScreenWindow( window );
-
-		if( dm != null && vc.isDisplayChangeSupported() ){
+		if( dm != null && vc.isFullScreenSupported() ){
 			try{
 				vc.setDisplayMode( dm );
 			}catch(Exception ex){}

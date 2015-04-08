@@ -1,10 +1,12 @@
 package GameScreens;
 
 import ImageLoading.ImageLoader;
-import Objects.*;
+import Objects.DraggableBoat;
+import Objects.DraggablePlane;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -136,7 +138,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         panel.add( boatButton );
         panel.add( planeButton );
         dragBoat = new DraggableBoat(1000, 500);
-        dragPlane = new DraggablePlane(500, 500);
+        dragPlane = new DraggablePlane(100, 200);
     }
 
     @Override
@@ -159,7 +161,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     onLand = true;
                 }else onLand = false;
                 // Check if on shallow water
-                if( values[0] == 125.0 && values[1] == 125.0 && values[2] == 125.0 ){
+                if( values[0] == 128.0 && values[1] == 128.0 && values[2] == 128.0 ){
                     onShallow = true;
                 }else onShallow = false;
                 // Check if on deep
@@ -198,7 +200,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     onLand = true;
                 }else onLand = false;
                 // Check if on shallow water
-                if( values[0] == 125.0 && values[1] == 125.0 && values[2] == 125.0 ){
+                if( values[0] == 128.0 && values[1] == 128.0 && values[2] == 128.0 ){
                     onShallow = true;
                 }else onShallow = false;
                 // Check if on deep
@@ -208,10 +210,8 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
             }
             // Make sure we are not dragging the plane over land or deep water
-            if( !onLand && !onDeep ) {
                 dragPlane.x = curX - 100;
                 dragPlane.y = curY - 100;
-            }
 
             if( rotateCount == 0 ){
                 oldX = curX;

@@ -1,15 +1,10 @@
 package ImageLoading;
 
-import java.awt.*;
-import javax.swing.*;
-import java.nio.ByteBuffer;
+import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
 
-import org.opencv.core.*;
-import org.opencv.highgui.*;
-
-import java.awt.event.MouseEvent;
-import java.awt.event.*;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 
 /**
  * Created by danny on 11/25/14.
@@ -53,10 +48,10 @@ public class ImageLoader {
     // Convert a Mat to a BufferedImage
     // Displays faster this way and avoids screen flickering
     private BufferedImage matToImage(Mat m) {
-//        int type = BufferedImage.TYPE_BYTE_GRAY;
-//        if (m.channels() > 1) {
-            int type = BufferedImage.TYPE_3BYTE_BGR;
-//        }
+        int type = BufferedImage.TYPE_BYTE_GRAY;
+        if (m.channels() > 1) {
+            type = BufferedImage.TYPE_3BYTE_BGR;
+        }
         int bufferSize = m.channels() * m.cols() * m.rows();
         byte[] b = new byte[bufferSize];
         m.get(0, 0, b); // get all the pixels
@@ -68,7 +63,6 @@ public class ImageLoader {
 
     public void checkPixels(Mat reveal, Mat destination, org.opencv.core.Point mousePoint, boolean boatActive, boolean planeActive) {
         int mouseX = (int) mousePoint.x, mouseY = (int) mousePoint.y;
-int count = 0;
         // Check mask value at drag
         double[] values = maskMat.get(mouseY, mouseX);
         if( values != null ){
@@ -76,7 +70,7 @@ int count = 0;
             if( values[0] == 0.0 ){
                // System.out.println("black -- do nothing");
             // GRAY
-            }else if (values[0] == 125.0) {
+            }else if (values[0] == 128.0) {
                 // System.out.println( "gray" );
                 // Have to only check the rows that we need around the circle!
                 int rowStart = (int) mousePoint.y - 50;
@@ -92,7 +86,7 @@ int count = 0;
                         if (vals == null) {
                             //System.out.println("null");
                         }
-                        else if (vals[0] == 255.0 && planeActive && valid[0] == 125.0 && valid[1] == 125.0 && valid[2] == 125.0) {
+                        else if (vals[0] == 255.0 && planeActive && valid[0] == 128.0 && valid[1] == 128.0 && valid[2] == 128.0) {
                             destination.put(r, c, belowMat.get(r, c));
                         }
                     }
