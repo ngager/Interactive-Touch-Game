@@ -13,7 +13,7 @@ public class ImageLoader {
 
     private Mat aboveMat, belowMat, maskMat, destination, revealMask;
 
-    public ImageLoader(String abovePath, String belowPath, String maskPath) {
+    public ImageLoader(String abovePath, String belowPath, String maskPath ) {
         // Read the image files into a matrix given the file path in string form
         aboveMat = Highgui.imread(abovePath);
         belowMat = Highgui.imread(belowPath);
@@ -28,9 +28,9 @@ public class ImageLoader {
     public Mat getMatrix(String s) {
         if (s.equals("above"))
             return aboveMat;
-        else if (s.equals("below"))
+        else if (s.equals("below")) {
             return belowMat;
-        else if (s.equals("mask"))
+        }else if (s.equals("mask"))
             return maskMat;
         else if (s.equals("reveal"))
             return revealMask;

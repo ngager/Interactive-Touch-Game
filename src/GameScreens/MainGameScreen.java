@@ -82,6 +82,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         revealImage = imageLoader.getImage( revealMask );
         destImage = imageLoader.getImage ( destination );
 
+
         // JPanel
         this.getContentPane().add(panel = new JPanel() {
             @Override

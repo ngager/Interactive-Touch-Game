@@ -12,15 +12,15 @@ import java.awt.*;
  * Created by danny on 11/19/14.
  */
 public class Game {
-    private String abovePath, belowPath, maskPath;
+    private String abovePath, belowPath, maskPath, flagPath;
     private ImageLoader imgLoader;
 
     public Game(){
         // Point to the files you would like to use for the display!
         // To switch levels all you have to do is change these three lines!
-        abovePath = getClass().getClassLoader().getResource("above.png").getPath();
-        belowPath = getClass().getClassLoader().getResource("below.png").getPath();
-        maskPath  = getClass().getClassLoader().getResource("mask.png").getPath();
+        abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath();
+        belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath();
+        maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath();
         // Create an ImageLoader to load all of the pictures for us.
         imgLoader = new ImageLoader( abovePath, belowPath, maskPath );
         // Res, res, color bit, refresh rate
