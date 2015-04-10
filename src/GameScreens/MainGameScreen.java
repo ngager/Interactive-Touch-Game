@@ -1,6 +1,7 @@
 package GameScreens;
 
 import ImageLoading.ImageLoader;
+import Objects.DebrisFlagger;
 import Objects.DraggableBoat;
 import Objects.DraggablePlane;
 import org.opencv.core.Core;
@@ -30,11 +31,13 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     private float angle;
     private int rotateCount = 0;
     private boolean onLand = false, onShallow = false, onDeep = false;
+    private MouseEvent globalDragEvent;
 
     // Image matrices
     private Mat aboveMat, belowMat, destination, maskMat, revealMask;
     // Load to BufferedImages
     private BufferedImage aboveImage, belowImage, destImage, maskImage, revealImage;
+    private DebrisFlagger flagImages[];
     private int circleRadius = 50;
     private ImageLoader imageLoader;
     public org.opencv.core.Point globalPoint;
@@ -43,6 +46,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     public MainGameScreen( ImageLoader imgLoader ){
         addMouseListener(this);
         addMouseMotionListener(this);
+        flagImages = new DebrisFlagger[1];
         try{
             boatIcon = ImageIO.read(getClass().getClassLoader().getResource("boat_temp.png"));
             planeIcon = ImageIO.read(getClass().getClassLoader().getResource("plane_temp.png"));
@@ -50,6 +54,9 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         }catch(IOException e ){
 
         }
+
+            flagImages[0] = new DebrisFlagger(800, 900);
+
 
         boatButton = new JButton(new ImageIcon(boatIcon));
         boatButton.setBorder( BorderFactory.createLineBorder( Color.RED ));
@@ -102,6 +109,19 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 destImage = imageLoader.getImage(destination);
                 // Draw background
                 g2.drawImage(destImage, 0, 0, null);
+                // Draw flags
+                if( globalDragEvent != null ){
+                    System.out.println( globalDragEvent.getPoint() );
+                    for( DebrisFlagger f : flagImages) {
+                        if (f.bounds.getBounds().contains(globalDragEvent.getPoint())) {
+                            f.uncovered = true;
+                        }
+                        if(f.uncovered == true){
+                            g2.drawImage(f.img, f.x, f.y, null);
+                            f.bounds.setBounds(f.x, f.y, f.width, f.height);
+                        }
+                    }
+                }
                 // Draw plane and boat in beginning
                 if( !boatActive && !planeActive ){
                     // Draw plane
@@ -132,6 +152,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
                    // dragBoat.bounds.setBounds(dragBoat.x, dragBoat.y, dragBoat.width, dragBoat.height);
                 }
+
             }
         });
 
@@ -144,6 +165,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        globalDragEvent = e;
         if( dragBoat.bounds.getBounds().contains(e.getPoint()) && boatActive) {
             curX = e.getX();
             curY = e.getY();
