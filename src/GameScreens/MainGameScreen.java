@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Created by danny on 2/26/15.
@@ -23,21 +24,25 @@ import java.io.IOException;
 public class MainGameScreen extends ScreenUtility.FullScreen {
     private BufferedImage boatIcon = null;
     private BufferedImage planeIcon = null;
-    private static JButton boatButton, planeButton;
     private DraggableBoat dragBoat;
     private DraggablePlane dragPlane;
     private boolean boatActive = false, planeActive = false;
     private int curX, curY, oldX, oldY;
     private float angle;
-    private int rotateCount = 0;
+    private int rotateBoat = 0;
+    private int rotatePlane = 0;
     private boolean onLand = false, onShallow = false, onDeep = false;
     private MouseEvent globalDragEvent;
+    private final int NUM_OBJECTS = 5;
+    int foundCount = 0;
 
     // Image matrices
     private Mat aboveMat, belowMat, destination, maskMat, revealMask;
     // Load to BufferedImages
     private BufferedImage aboveImage, belowImage, destImage, maskImage, revealImage;
     private DebrisFlagger flagImages[];
+    private int randomX[];
+    private int randomY[];
     private int circleRadius = 50;
     private ImageLoader imageLoader;
     public org.opencv.core.Point globalPoint;
@@ -46,33 +51,14 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     public MainGameScreen( ImageLoader imgLoader ){
         addMouseListener(this);
         addMouseMotionListener(this);
-        flagImages = new DebrisFlagger[1];
+        flagImages = new DebrisFlagger[NUM_OBJECTS];
+        randomX = new int[NUM_OBJECTS];
+        randomY = new int[NUM_OBJECTS];
         try{
             boatIcon = ImageIO.read(getClass().getClassLoader().getResource("boat_temp.png"));
             planeIcon = ImageIO.read(getClass().getClassLoader().getResource("plane_temp.png"));
 
-        }catch(IOException e ){
-
-        }
-
-            flagImages[0] = new DebrisFlagger(800, 900);
-
-
-        boatButton = new JButton(new ImageIcon(boatIcon));
-        boatButton.setBorder( BorderFactory.createLineBorder( Color.RED ));
-        //boatButton.setContentAreaFilled(false);
-        boatButton.setOpaque(true);
-        boatButton.setBackground( Color.GRAY.darker() );
-        boatButton.setBounds(1510, 10, boatIcon.getWidth(), boatIcon.getHeight());
-        boatButton.addActionListener(this);
-
-        planeButton = new JButton(new ImageIcon(planeIcon));
-        planeButton.setBorder(BorderFactory.createLineBorder(Color.RED));
-        //planeButton.setContentAreaFilled(false);
-        planeButton.setOpaque(true);
-        planeButton.setBackground( Color.GRAY.darker() );
-        planeButton.setBounds(1710, 10, planeIcon.getWidth(), planeIcon.getHeight());
-        planeButton.addActionListener(this);
+        }catch(IOException e ){}
 
         imageLoader = imgLoader;
         // Read images into matrices
@@ -89,6 +75,29 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         revealImage = imageLoader.getImage( revealMask );
         destImage = imageLoader.getImage ( destination );
 
+        // Place random flags
+        Random randX = new Random();
+        Random randY = new Random();
+        int x, y;
+        for( int r = 0; r < NUM_OBJECTS; r++ ){
+            x = randX.nextInt( 1820 + 1 );
+            y = randY.nextInt( 980 + 1  );
+
+            // Make sure we don't place on land
+            double checkMask[] = maskMat.get( y, x );
+            if( checkMask[0] == 0.0 && checkMask[1] == 0.0 && checkMask[2] == 0.0){
+                System.out.println( "woops, on land" );
+                r--;
+            }else {
+                randomX[r] = x;
+                randomY[r] = y;
+            }
+        }
+        // Print out the flag locations
+        for( int f = 0; f < flagImages.length; f++ ){
+            System.out.println( randomX[f] + ", " +  randomY[f] );
+            flagImages[f] = new DebrisFlagger(randomX[f], randomY[f]);
+        }
 
         // JPanel
         this.getContentPane().add(panel = new JPanel() {
@@ -111,12 +120,16 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 g2.drawImage(destImage, 0, 0, null);
                 // Draw flags
                 if( globalDragEvent != null ){
-                    System.out.println( globalDragEvent.getPoint() );
                     for( DebrisFlagger f : flagImages) {
-                        if (f.bounds.getBounds().contains(globalDragEvent.getPoint())) {
+                        if (f.bounds.getBounds().contains(globalDragEvent.getPoint()) && !f.uncovered) {
                             f.uncovered = true;
+                            System.out.println("FOUND: " + f.x + ", " + f.y );
+                            foundCount++;
                         }
-                        if(f.uncovered == true){
+                        else
+                            System.out.println( "Remaining: " + (NUM_OBJECTS - foundCount) );
+
+                        if( f.uncovered ){
                             g2.drawImage(f.img, f.x, f.y, null);
                             f.bounds.setBounds(f.x, f.y, f.width, f.height);
                         }
@@ -133,7 +146,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 }
                 // Need to save the old transformation or else the buttons get messed up
                 AffineTransform oldXForm = g2.getTransform();
-                if( boatActive ){
+                if( boatActive && !planeActive){
                     if( !onLand && !onShallow)
                         g2.rotate(Math.toRadians(angle), dragBoat.x + 100, dragBoat.y + 100);
                     g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
@@ -141,24 +154,21 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     // Restore to normal transformation
                     g2.setTransform( oldXForm );
                     g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
-                    //dragPlane.bounds.setBounds(dragPlane.x, dragPlane.y, dragPlane.width, dragPlane.height);
-                }else if( planeActive ){
-                    if( !onLand && !onDeep)
-                        g2.rotate(Math.toRadians(angle), dragPlane.x + 100, dragPlane.y + 100);
+                }else if( planeActive && !boatActive){
+                    //if( !onLand && !onDeep)
+                    g2.rotate(Math.toRadians(angle), dragPlane.x + 100, dragPlane.y + 100);
                     g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
                     dragPlane.bounds.setBounds(dragPlane.x, dragPlane.y, dragPlane.width, dragPlane.height);
                     // Restore to normal transformation
                     g2.setTransform( oldXForm );
                     g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
-                   // dragBoat.bounds.setBounds(dragBoat.x, dragBoat.y, dragBoat.width, dragBoat.height);
                 }
-
+                if( boatActive && planeActive )
+                    System.out.println( "OH NICE MAN ");
             }
         });
 
         panel.setLayout(null);
-        panel.add( boatButton );
-        panel.add( planeButton );
         dragBoat = new DraggableBoat(1000, 500);
         dragPlane = new DraggablePlane(100, 200);
     }
@@ -166,13 +176,15 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     @Override
     public void mouseDragged(MouseEvent e) {
         globalDragEvent = e;
-        if( dragBoat.bounds.getBounds().contains(e.getPoint()) && boatActive) {
+        if( dragBoat.bounds.getBounds().contains(e.getPoint())) {
+            boatActive = true;
+            planeActive = false;
             curX = e.getX();
             curY = e.getY();
             // Rotate every other pixel
-            if( rotateCount == 1 ){
+            if( rotateBoat == 3 ){
                 calculateRotation();
-                rotateCount = 0;
+                rotateBoat = 0;
             }
             org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
             globalPoint = mousePoint;
@@ -196,22 +208,33 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
             // Make sure we are not dragging the boat over land or shallow water
             if( !onLand && !onShallow ) {
                 dragBoat.x = curX - 100;
+                if( dragBoat.x < 0 )
+                    dragBoat.x = 0;
+                if( dragBoat.x > 1920-150 )
+                    dragBoat.x = 1920-150;
+
                 dragBoat.y = curY - 100;
+                if( dragBoat.y < 0 )
+                    dragBoat.y = 0;
+                if( dragBoat.y > 1080 )
+                    dragBoat.y = 1080;
             }
 
-            if( rotateCount == 0 ){
+            if( rotateBoat == 0 ){
                 oldX = curX;
                 oldY = curY;
             }
-            rotateCount++;
+            rotateBoat++;
             repaint();
-        }else if( dragPlane.bounds.getBounds().contains(e.getPoint()) && planeActive ){
+        }else if( dragPlane.bounds.getBounds().contains(e.getPoint() )){
+            planeActive = true;
+            boatActive = false;
             curX = e.getX();
             curY = e.getY();
             // Rotate every other pixel
-            if( rotateCount == 1 ){
+            if( rotatePlane == 3 ){
                 calculateRotation();
-                rotateCount = 0;
+                rotatePlane = 0;
             }
             org.opencv.core.Point mousePoint = new org.opencv.core.Point(e.getX(), e.getY());
             globalPoint = mousePoint;
@@ -232,15 +255,23 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 }else onDeep = false;
                 Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
             }
-            // Make sure we are not dragging the plane over land or deep water
-                dragPlane.x = curX - 100;
-                dragPlane.y = curY - 100;
+            dragPlane.x = curX - 100;
+            if( dragPlane.x < 0 )
+                dragPlane.x = 0;
+            if( dragPlane.x > 1920-150 )
+                dragPlane.x = 1920-150;
 
-            if( rotateCount == 0 ){
+            dragPlane.y = curY - 100;
+            if( dragPlane.y < 0 )
+                dragPlane.y = 0;
+            if( dragPlane.y > 1080 )
+                dragPlane.y = 1080;
+
+            if( rotatePlane == 0 ){
                 oldX = curX;
                 oldY = curY;
             }
-            rotateCount++;
+            rotatePlane++;
             repaint();
         }
     }
@@ -255,13 +286,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if( e.getSource() == boatButton ){
-            boatActive = true;
-            planeActive = false;
-        }else if( e.getSource() == planeButton){
-            boatActive = false;
-            planeActive = true;
-        }
+
     }
 
     @Override

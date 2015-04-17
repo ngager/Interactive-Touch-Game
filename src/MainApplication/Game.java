@@ -3,7 +3,7 @@ package MainApplication;
 import GameScreens.MainGameScreen;
 import ImageLoading.ImageLoader;
 import org.opencv.core.Core;
-
+import java.lang.String;
 import java.awt.*;
 
 //import GameScreens.WelcomeScreen;
@@ -18,13 +18,16 @@ public class Game {
     public Game(){
         // Point to the files you would like to use for the display!
         // To switch levels all you have to do is change these three lines!
-        abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath();
-        belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath();
-        maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath();
+        abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath().substring(1);
+        belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath().substring(1);
+        maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath().substring(1);
         // Create an ImageLoader to load all of the pictures for us.
         imgLoader = new ImageLoader( abovePath, belowPath, maskPath );
-        // Res, res, color bit, refresh rate
-        DisplayMode dm = new DisplayMode( 1920, 1080, DisplayMode.BIT_DEPTH_MULTI, DisplayMode.REFRESH_RATE_UNKNOWN );
+
+        // Grab the current display and graphics device being used
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice vc = env.getDefaultScreenDevice();
+        DisplayMode dm = vc.getDisplayMode();
         MainGameScreen w = new MainGameScreen( imgLoader );
         w.run( dm );
     }

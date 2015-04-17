@@ -28,48 +28,16 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
 
         addMouseListener( this );
         this.setLayout( null );
-//        // Load the icons for the buttons
-//        try{
-//            buttonIcon1 = ImageIO.read( getClass().getClassLoader().getResourceAsStream("level1Button.png") );
-//            buttonIcon2 = ImageIO.read( getClass().getClassLoader().getResourceAsStream("level2Button.png") );
-//            buttonIcon3 = ImageIO.read( getClass().getClassLoader().getResourceAsStream("level3Button.png") );
-//        }catch( IOException e ){
-//
-//        }
-//        // Make each button, hardcoded to a certain location
-//        // Locations and sizes were found using Photoshop
-//        //    * Can result in a problem with changing these screens later on?
-//        button1 = new JButton(new ImageIcon(buttonIcon1));
-//        button1.setBorder(BorderFactory.createEmptyBorder());
-//        button1.setContentAreaFilled(false);
-//        button1.setBounds(1650, 400, 217, 150);
-//        button1.addActionListener( this );
-//
-//        button2 = new JButton(new ImageIcon(buttonIcon2));
-//        button2.setBorder(BorderFactory.createEmptyBorder());
-//        button2.setContentAreaFilled(false);
-//        button2.setBounds(1650, 625, 217, 150);
-//        button2.addActionListener(this);
-//
-//        button3 = new JButton(new ImageIcon(buttonIcon3));
-//        button3.setBorder(BorderFactory.createEmptyBorder());
-//        button3.setContentAreaFilled(false);
-//        button3.setBounds( 1650, 846, 217, 150 );
-//        button3.addActionListener( this );
-//
-//        this.add( button1 );
-//        this.add( button2 );
-//        this.add( button3 );
     }
     // Very fast and easy way to set a background image
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
-      //  g.setColor( Color.BLACK );
-      //  g.fillRect( 1695, 415, (1820-1695), (540-415) );
+
     }
-//    // Don't even need to check mouse click coordinates because the buttons take care of it
+
+    // Pseudo-buttons
     @Override
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
@@ -93,9 +61,7 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
     public void mousePressed(MouseEvent e) {}
 
     @Override
-    public void mouseReleased(MouseEvent e) {
-        System.out.println( "RELEASE!" );
-    }
+    public void mouseReleased(MouseEvent e) {}
 
     @Override
     public void mouseEntered(MouseEvent e) {}
