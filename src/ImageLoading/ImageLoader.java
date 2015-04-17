@@ -1,6 +1,9 @@
 package ImageLoading;
 
+import GameScreens.MainGameScreen;
 import org.opencv.core.Mat;
+import org.opencv.core.Core;
+import org.opencv.core.Scalar;
 import org.opencv.highgui.Highgui;
 
 import java.awt.image.BufferedImage;
@@ -59,6 +62,63 @@ public class ImageLoader {
         final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
         System.arraycopy(b, 0, targetPixels, 0, b.length);
         return image;
+    }
+
+    public Mat addFade( Mat fadedCircleMask, Mat destination, org.opencv.core.Point mousePoint, boolean planeActive, boolean boatActive, Mat fadedCircleMat ){
+        int mouseX = (int) mousePoint.x, mouseY = (int) mousePoint.y;
+        double[] values = maskMat.get(mouseY, mouseX);
+        if( values != null ){
+            // BLACK
+            if( values[0] == 0.0 ){
+
+            }else if (values[0] == 128.0) {
+                // Have to only check the rows that we need around the circle!
+                int rowStart = (int) mousePoint.y - 60;
+                int rowEnd = (int) mousePoint.y + 60;
+
+                int colStart = (int) mousePoint.x - 60;
+                int colEnd = (int) mousePoint.x + 60;
+
+                for (int r = rowStart; r < rowEnd; r++) {
+                    for (int c = colStart; c < colEnd; c++) {
+                        if( r >= 0 && r <= 1080 && c >= 0 && c <= 1920 ) {
+                            double[] vals = fadedCircleMask.get(r, c);
+                            double[] valid = maskMat.get(r, c);
+                            if (vals == null || valid == null) {
+                            } else if (vals[0] == 255.0 && planeActive && valid[0] == 128.0 && valid[1] == 128.0 && valid[2] == 128.0) {
+                                fadedCircleMat.put(r, c, belowMat.get(r, c));
+                            }
+                        }
+                    }
+                }
+            // WHITE
+            } else if (values[0] == 255.0) {
+                // System.out.println( "white" );
+                // Have to only check the rows that we need around the circle!
+                int rowStart = (int) mousePoint.y - 60;
+                int rowEnd = (int) mousePoint.y + 60;
+
+                int colStart = (int) mousePoint.x - 60;
+                int colEnd = (int) mousePoint.x + 60;
+
+                for (int r = rowStart; r < rowEnd; r++) {
+                    for (int c = colStart; c < colEnd; c++) {
+                        if( r >= 0 && r <= 1080 && c >= 0 && c <= 1920 ) {
+                            double[] vals = fadedCircleMask.get(r, c);
+                            double[] valid = maskMat.get(r, c);
+                            if (vals == null) {
+                            } else if (vals[0] == 255.0 && boatActive && valid[0] == 255.0 && valid[1] == 255.0 && valid[2] == 255.0) {
+                                fadedCircleMat.put(r, c, belowMat.get(r, c));
+                            }
+                        }
+                    }
+                }
+            }
+            double opacity = 0.4;
+            Core.addWeighted(destination, 1 - opacity, fadedCircleMat, opacity, 0, destination);
+            return destination;
+        }
+        return destination;
     }
 
     public void checkPixels(Mat reveal, Mat destination, org.opencv.core.Point mousePoint, boolean boatActive, boolean planeActive) {

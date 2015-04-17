@@ -38,6 +38,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
 
     // Image matrices
     private Mat aboveMat, belowMat, destination, maskMat, revealMask;
+    public Mat fadedCircleMask, fadedCircleMat;
     // Load to BufferedImages
     private BufferedImage aboveImage, belowImage, destImage, maskImage, revealImage;
     private DebrisFlagger flagImages[];
@@ -67,6 +68,8 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         maskMat = imageLoader.getMatrix("mask");
         revealMask = imageLoader.getMatrix("reveal");
         destination = imageLoader.getMatrix("destination");
+        fadedCircleMask = Mat.zeros( 1080, 1920, 0);
+        fadedCircleMat = imageLoader.getMatrix("above");
 
         // Load to BufferedImages
         aboveImage = imageLoader.getImage( aboveMat );
@@ -95,7 +98,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         }
         // Print out the flag locations
         for( int f = 0; f < flagImages.length; f++ ){
-            System.out.println( randomX[f] + ", " +  randomY[f] );
+            //System.out.println( randomX[f] + ", " +  randomY[f] );
             flagImages[f] = new DebrisFlagger(randomX[f], randomY[f]);
         }
 
@@ -112,8 +115,10 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 super.paintComponent(g2);
 
                 // Calculate the new pixels for the background
-                if (globalPoint != null)
+                if (globalPoint != null) {
                     imageLoader.checkPixels(revealMask, destination, globalPoint, boatActive, planeActive);
+                    destination = imageLoader.addFade( fadedCircleMask, destination, globalPoint, planeActive, boatActive, fadedCircleMat );
+                }
                 // Render the new image
                 destImage = imageLoader.getImage(destination);
                 // Draw background
@@ -123,11 +128,11 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     for( DebrisFlagger f : flagImages) {
                         if (f.bounds.getBounds().contains(globalDragEvent.getPoint()) && !f.uncovered) {
                             f.uncovered = true;
-                            System.out.println("FOUND: " + f.x + ", " + f.y );
+                   //         System.out.println("FOUND: " + f.x + ", " + f.y );
                             foundCount++;
                         }
-                        else
-                            System.out.println( "Remaining: " + (NUM_OBJECTS - foundCount) );
+                      //  else
+                       //     System.out.println( "Remaining: " + (NUM_OBJECTS - foundCount) );
 
                         if( f.uncovered ){
                             g2.drawImage(f.img, f.x, f.y, null);
@@ -163,8 +168,6 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     g2.setTransform( oldXForm );
                     g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
                 }
-                if( boatActive && planeActive )
-                    System.out.println( "OH NICE MAN ");
             }
         });
 
@@ -204,6 +207,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     onDeep = true;
                 }else onDeep = false;
                 Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
+                Core.circle(fadedCircleMask, mousePoint, circleRadius + 5, new Scalar(255.0, 255.0, 255.0), -1, 0, 0 );
             }
             // Make sure we are not dragging the boat over land or shallow water
             if( !onLand && !onShallow ) {
@@ -254,6 +258,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     onDeep = true;
                 }else onDeep = false;
                 Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
+                Core.circle(fadedCircleMask, mousePoint, circleRadius + 5, new Scalar(255.0, 255.0, 255.0), -1, 0, 0 );
             }
             dragPlane.x = curX - 100;
             if( dragPlane.x < 0 )

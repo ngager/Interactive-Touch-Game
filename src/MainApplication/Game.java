@@ -18,9 +18,10 @@ public class Game {
     public Game(){
         // Point to the files you would like to use for the display!
         // To switch levels all you have to do is change these three lines!
-        abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath().substring(1);
-        belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath().substring(1);
-        maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath().substring(1);
+        // Don't substring this on a mac
+        abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath();
+        belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath();
+        maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath();
         // Create an ImageLoader to load all of the pictures for us.
         imgLoader = new ImageLoader( abovePath, belowPath, maskPath );
 
