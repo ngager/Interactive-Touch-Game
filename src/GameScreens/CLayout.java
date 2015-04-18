@@ -20,8 +20,8 @@ public class CLayout extends JFrame {
     // Game screens
     WelcomeScreen welcomePanel = new WelcomeScreen(cl, panelContainer);
     private InstructionDifficultyScreen difficultyPanel = new InstructionDifficultyScreen(cl, panelContainer);
-    private GuessingScreen guessingPanel = new GuessingScreen(cl, panelContainer);
-    private ResultsScreen resultsPanel = new ResultsScreen();
+    private GuessingScreen guessingPanel = new GuessingScreen(this, panelContainer);
+    private ResultsScreen resultsPanel = new ResultsScreen(cl, panelContainer);
     String curPanel = "";
 
     public CLayout(){
@@ -36,7 +36,7 @@ public class CLayout extends JFrame {
         /**
          * show the starting panel (welcome screen number)
          */
-        cl.show( panelContainer, "4");
+        cl.show( panelContainer, "1");
         curPanel = "welcome";
 
         panelContainer.setSize(1920, 1080);
@@ -60,6 +60,11 @@ public class CLayout extends JFrame {
             }catch(Exception ex){ex.printStackTrace();}
         }
     }
+
+    public void passResults( int scores, int total ){
+        resultsPanel.setResults( scores, total );
+    }
+
     public static void main( String[] args ){
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         new CLayout();

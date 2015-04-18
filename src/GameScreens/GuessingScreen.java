@@ -17,7 +17,7 @@ import java.util.Random;
 public class GuessingScreen extends JPanel implements MouseListener{
     // Path to background image
     Image background = Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("hurricane_template_guessing.png"));
-    CardLayout cl;
+    CLayout layout;
     JPanel panelContainer;
     int imageX = 1295 + 10;
     int image1Y = 162 + 10, image2Y = 380 + 10, image3Y = 598 + 10, image4Y = 816 + 10;
@@ -32,11 +32,12 @@ public class GuessingScreen extends JPanel implements MouseListener{
     ScanObjects allScans[];
     String pastLeftScans[];
     int pastIndex = 0;
+    int userScore = 0;
 
-    public GuessingScreen(CardLayout cl, JPanel panelContainer) {
+    public GuessingScreen(CLayout layout, JPanel panelContainer) {
         addMouseListener(this);
         this.setLayout(null);
-        this.cl = cl;
+        this.layout = layout;
         this.panelContainer = panelContainer;
 
         // Set up all of the game objects
@@ -73,12 +74,12 @@ public class GuessingScreen extends JPanel implements MouseListener{
         String name3 = objectNames[indeces[2]];
         String name4 = objectNames[indeces[3]];
 
-        System.out.println("--- Objects ---");
-        System.out.println(name);
-        System.out.println( name2 );
-        System.out.println( name3 );
-        System.out.println( name4 );
-        System.out.println( "---------------" );
+//        System.out.println("--- Objects ---");
+//        System.out.println(name);
+//        System.out.println( name2 );
+//        System.out.println( name3 );
+//        System.out.println( name4 );
+//        System.out.println( "---------------" );
 
         // Pick the object for the left
         for(ScanObjects s : allScans){
@@ -129,44 +130,49 @@ public class GuessingScreen extends JPanel implements MouseListener{
         pastIndex++;
         if( pastIndex == (NUM_OBJECTS)){
             System.out.println( "CALCULATE THE RESULTS NOW" );
+            layout.passResults( userScore, NUM_OBJECTS );
+            layout.cl.show(panelContainer, "3");
+        }else{
+            leftScan = null;
+            leftScanName = "";
+            guessOptions = new GuessObjects[NUM_OBJECTS - 1];
+            indeces = new int[NUM_OBJECTS - 1];
+            guessIndeces = new int[NUM_OBJECTS - 1];
+            randomizeObjects();
+            repaint();
         }
-        leftScan = null;
-        leftScanName = "";
-        guessOptions = new GuessObjects[NUM_OBJECTS - 1];
-        indeces = new int[NUM_OBJECTS - 1];
-        guessIndeces = new int[NUM_OBJECTS - 1];
-        randomizeObjects();
-        repaint();
     }
 
     // Very fast and easy way to set a background image
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        super.paintComponent(g2);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+        g2.drawImage(background, 0, 0, getWidth(), getHeight(), this);
         for( int i = 0; i < guessOptions.length; i++ ){
             if( guessOptions[i] != null ) {
                 // Switch to determine which Y coordinate to use while drawing the image
                 switch(i){
                     case 0:
-                        g.drawImage(guessOptions[guessIndeces[i]].img, imageX, image1Y, guessOptions[guessIndeces[i]].width, guessOptions[guessIndeces[i]].height, this);
+                        g2.drawImage(guessOptions[guessIndeces[i]].img, imageX, image1Y, guessOptions[guessIndeces[i]].width, guessOptions[guessIndeces[i]].height, this);
                         break;
                     case 1:
-                        g.drawImage(guessOptions[guessIndeces[i]].img, imageX, image2Y, guessOptions[guessIndeces[i]].width, guessOptions[guessIndeces[i]].height, this);
+                        g2.drawImage(guessOptions[guessIndeces[i]].img, imageX, image2Y, guessOptions[guessIndeces[i]].width, guessOptions[guessIndeces[i]].height, this);
                         break;
                     case 2:
-                        g.drawImage(guessOptions[guessIndeces[i]].img, imageX, image3Y, guessOptions[guessIndeces[i]].width, guessOptions[guessIndeces[i]].height, this);
+                        g2.drawImage(guessOptions[guessIndeces[i]].img, imageX, image3Y, guessOptions[guessIndeces[i]].width, guessOptions[guessIndeces[i]].height, this);
                         break;
                     case 3:
-                        g.drawImage(guessOptions[guessIndeces[i]].img, imageX, image4Y, guessOptions[guessIndeces[i]].width, guessOptions[guessIndeces[i]].height, this);
+                        g2.drawImage(guessOptions[guessIndeces[i]].img, imageX, image4Y, guessOptions[guessIndeces[i]].width, guessOptions[guessIndeces[i]].height, this);
                         break;
                     default:
                         break;
                 }
             }
         }
-        g.drawImage( leftScan, 500, 500, 400, 400, this);
+        g2.drawImage( leftScan, 500, 500, 400, 400, this);
     }
 
     // Don't even need to check mouse click coordinates because the buttons take care of it
@@ -178,26 +184,30 @@ public class GuessingScreen extends JPanel implements MouseListener{
         if( curX > imageX && curX < (imageX+200) ){
             // BUTTON 1
             if( curY > image1Y && curY < (image1Y+200)) {
-                if( guessOptions[0].getName() == leftScanName ){
+                if( guessOptions[guessIndeces[0]].getName().equals(leftScanName) ){
                     System.out.println("RIGHT");
+                    userScore++;
                 }else System.out.println( "WRONG" );
             }
             // BUTTON 2
             else if( curY > image2Y && curY < (image2Y+200)){
-                if( guessOptions[1].getName() == leftScanName ){
+                if( guessOptions[guessIndeces[1]].getName().equals(leftScanName) ){
                     System.out.println( "RIGHT" );
+                    userScore++;
                 }else System.out.println( "WRONG" );
             }
             // BUTTON 3
             else if( curY > image3Y && curY < (image3Y+200)){
-                if( guessOptions[2].getName() == leftScanName ){
+                if( guessOptions[guessIndeces[2]].getName().equals(leftScanName) ){
                     System.out.println( "RIGHT" );
+                    userScore++;
                 }else System.out.println( "WRONG" );
             }
             // BUTTON 4
             else if( curY > image4Y && curY < (image4Y+200)){
-                if( guessOptions[3].getName() == leftScanName ){
+                if( guessOptions[guessIndeces[3]].getName().equals(leftScanName) ){
                     System.out.println( "RIGHT" );
+                    userScore++;
                 }else System.out.println( "WRONG" );
             }
             newRound();

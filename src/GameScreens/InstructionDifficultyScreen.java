@@ -45,15 +45,15 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
 
         // Level 1
         if( (x >= 1695 && x <= 1820) && (y >= 415 && y <= 540) ){
-            new Game();
+            new Game( cl, panelContainer );
         }
         // Level 2
         else if( (x >= 1695 && x <= 1820) && (y >= 632 && y <= 757) ){
-            new Game();
+            new Game( cl, panelContainer );
         }
         // Level 3
         else if( (x >= 1695 && x <= 1820) && (y >= 859 && y <= 984) ){
-            new Game();
+            new Game( cl, panelContainer );
         }
     }
 

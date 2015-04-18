@@ -22,8 +22,6 @@ import java.util.Random;
  * Created by danny on 2/26/15.
  */
 public class MainGameScreen extends ScreenUtility.FullScreen {
-    private BufferedImage boatIcon = null;
-    private BufferedImage planeIcon = null;
     private DraggableBoat dragBoat;
     private DraggablePlane dragPlane;
     private boolean boatActive = false, planeActive = false;
@@ -31,7 +29,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     private float angle;
     private int rotateBoat = 0;
     private int rotatePlane = 0;
-    private boolean onLand = false, onShallow = false, onDeep = false;
+    private boolean onLand = false, onShallow = false;
     private MouseEvent globalDragEvent;
     private final int NUM_OBJECTS = 5;
     int foundCount = 0;
@@ -40,7 +38,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     private Mat aboveMat, belowMat, destination, maskMat, revealMask;
     public Mat fadedCircleMask, fadedCircleMat;
     // Load to BufferedImages
-    private BufferedImage aboveImage, belowImage, destImage, maskImage, revealImage;
+    private BufferedImage destImage;
     private DebrisFlagger flagImages[];
     private int randomX[];
     private int randomY[];
@@ -48,18 +46,30 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     private ImageLoader imageLoader;
     public org.opencv.core.Point globalPoint;
     private JPanel panel;
+    private JLabel label;
+    boolean done = false;
+    CardLayout cl;
+    JPanel panelContainer;
 
-    public MainGameScreen( ImageLoader imgLoader ){
+    public MainGameScreen( ImageLoader imgLoader, CardLayout cl, final JPanel panelContainer ){
         addMouseListener(this);
         addMouseMotionListener(this);
+        this.cl = cl;
+        this.panelContainer = panelContainer;
+
+        // Label in top right
+        label = new JLabel();
+        label.setSize(200, 100);
+        label.setLocation(1700, 20);
+        label.setOpaque(true);
+        label.setBackground(Color.GRAY.brighter());
+        label.setForeground(Color.BLACK);
+        label.setFont(new Font("Arial", 1, 24));
+        label.setText("<html>Found: " + foundCount + "<br>Remaining: " + (NUM_OBJECTS - foundCount) + "</html>");
+
         flagImages = new DebrisFlagger[NUM_OBJECTS];
         randomX = new int[NUM_OBJECTS];
         randomY = new int[NUM_OBJECTS];
-        try{
-            boatIcon = ImageIO.read(getClass().getClassLoader().getResource("boat_temp.png"));
-            planeIcon = ImageIO.read(getClass().getClassLoader().getResource("plane_temp.png"));
-
-        }catch(IOException e ){}
 
         imageLoader = imgLoader;
         // Read images into matrices
@@ -71,11 +81,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         fadedCircleMask = Mat.zeros( 1080, 1920, 0);
         fadedCircleMat = imageLoader.getMatrix("above");
 
-        // Load to BufferedImages
-        aboveImage = imageLoader.getImage( aboveMat );
-        belowImage = imageLoader.getImage( belowMat );
-        maskImage = imageLoader.getImage ( maskMat );
-        revealImage = imageLoader.getImage( revealMask );
+        // Load to BufferedImage
         destImage = imageLoader.getImage ( destination );
 
         // Place random flags
@@ -114,6 +120,13 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                 super.paintComponent(g2);
 
+                // FOUND ALL
+                if( done ){
+                    startGuessing();
+                }
+
+                label.setText( "<html>Found: " + foundCount + "<br>Remaining: " + (NUM_OBJECTS-foundCount) + "</html>" );
+
                 // Calculate the new pixels for the background
                 if (globalPoint != null) {
                     imageLoader.checkPixels(revealMask, destination, globalPoint, boatActive, planeActive);
@@ -128,12 +141,8 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     for( DebrisFlagger f : flagImages) {
                         if (f.bounds.getBounds().contains(globalDragEvent.getPoint()) && !f.uncovered) {
                             f.uncovered = true;
-                   //         System.out.println("FOUND: " + f.x + ", " + f.y );
                             foundCount++;
                         }
-                      //  else
-                       //     System.out.println( "Remaining: " + (NUM_OBJECTS - foundCount) );
-
                         if( f.uncovered ){
                             g2.drawImage(f.img, f.x, f.y, null);
                             f.bounds.setBounds(f.x, f.y, f.width, f.height);
@@ -160,7 +169,6 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     g2.setTransform( oldXForm );
                     g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
                 }else if( planeActive && !boatActive){
-                    //if( !onLand && !onDeep)
                     g2.rotate(Math.toRadians(angle), dragPlane.x + 100, dragPlane.y + 100);
                     g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
                     dragPlane.bounds.setBounds(dragPlane.x, dragPlane.y, dragPlane.width, dragPlane.height);
@@ -168,12 +176,32 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                     g2.setTransform( oldXForm );
                     g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
                 }
+
+                // WE ARE DONE HERE
+                if( foundCount == NUM_OBJECTS ){
+                    label.setBackground(Color.YELLOW);
+                    label.setText("<html><br>All objects found!</html>");
+                    System.out.println("*** FOUND ALL *** ");
+                    done = true;
+                }
+
             }
         });
 
         panel.setLayout(null);
+        panel.add( label );
         dragBoat = new DraggableBoat(1000, 500);
         dragPlane = new DraggablePlane(100, 200);
+    }
+
+    public void startGuessing(){
+        try {
+            Thread.sleep( 1000 );
+            this.dispose();
+            cl.show( panelContainer, "4" );
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -202,10 +230,6 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 if( values[0] == 128.0 && values[1] == 128.0 && values[2] == 128.0 ){
                     onShallow = true;
                 }else onShallow = false;
-                // Check if on deep
-                if( values[0] == 255.0 && values[1] == 255.0 && values[2] == 255.0 ){
-                    onDeep = true;
-                }else onDeep = false;
                 Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
                 Core.circle(fadedCircleMask, mousePoint, circleRadius + 5, new Scalar(255.0, 255.0, 255.0), -1, 0, 0 );
             }
@@ -253,10 +277,6 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 if( values[0] == 128.0 && values[1] == 128.0 && values[2] == 128.0 ){
                     onShallow = true;
                 }else onShallow = false;
-                // Check if on deep
-                if( values[0] == 255.0 && values[1] == 255.0 && values[2] == 255.0 ){
-                    onDeep = true;
-                }else onDeep = false;
                 Core.circle(revealMask, mousePoint, circleRadius, new Scalar(255.0, 255.0, 255.0), -1, 0, 0);
                 Core.circle(fadedCircleMask, mousePoint, circleRadius + 5, new Scalar(255.0, 255.0, 255.0), -1, 0, 0 );
             }
