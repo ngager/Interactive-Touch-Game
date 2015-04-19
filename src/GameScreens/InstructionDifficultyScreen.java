@@ -20,10 +20,12 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
     JButton button1, button2, button3;
     JPanel panelContainer;
     CardLayout cl;
+    CLayout layout;
     Rectangle r1, r2, r3;
 
-    public InstructionDifficultyScreen(CardLayout cl, JPanel panelContainer) {
-        this.cl = cl;
+    public InstructionDifficultyScreen(CLayout layout, JPanel panelContainer) {
+        this.cl = layout.cl;
+        this.layout = layout;
         this.panelContainer = panelContainer;
 
         addMouseListener( this );
@@ -45,15 +47,15 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
 
         // Level 1
         if( (x >= 1695 && x <= 1820) && (y >= 415 && y <= 540) ){
-            new Game( cl, panelContainer );
+            new Game( layout, panelContainer );
         }
         // Level 2
         else if( (x >= 1695 && x <= 1820) && (y >= 632 && y <= 757) ){
-            new Game( cl, panelContainer );
+            new Game( layout, panelContainer );
         }
         // Level 3
         else if( (x >= 1695 && x <= 1820) && (y >= 859 && y <= 984) ){
-            new Game( cl, panelContainer );
+            new Game( layout, panelContainer );
         }
     }
 

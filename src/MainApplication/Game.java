@@ -1,5 +1,6 @@
 package MainApplication;
 
+import GameScreens.CLayout;
 import GameScreens.MainGameScreen;
 import ImageLoading.ImageLoader;
 import org.opencv.core.Core;
@@ -17,7 +18,7 @@ public class Game {
     private String abovePath, belowPath, maskPath, flagPath;
     private ImageLoader imgLoader;
 
-    public Game(CardLayout cl, JPanel panelContainer ){
+    public Game(CLayout layout, JPanel panelContainer ){
         // Point to the files you would like to use for the display!
         // To switch levels all you have to do is change these three lines!
         // Don't substring this on a mac
@@ -31,7 +32,7 @@ public class Game {
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice vc = env.getDefaultScreenDevice();
         DisplayMode dm = vc.getDisplayMode();
-        MainGameScreen w = new MainGameScreen( imgLoader, cl, panelContainer );
+        MainGameScreen w = new MainGameScreen( imgLoader, layout, panelContainer );
         w.run( dm );
     }
 

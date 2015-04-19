@@ -132,6 +132,12 @@ public class GuessingScreen extends JPanel implements MouseListener{
             System.out.println( "CALCULATE THE RESULTS NOW" );
             layout.passResults( userScore, NUM_OBJECTS );
             layout.cl.show(panelContainer, "3");
+            leftScan = null;
+            leftScanName = "";
+            guessOptions = new GuessObjects[NUM_OBJECTS - 1];
+            indeces = new int[NUM_OBJECTS - 1];
+            guessIndeces = new int[NUM_OBJECTS - 1];
+            pastIndex = 0;
         }else{
             leftScan = null;
             leftScanName = "";

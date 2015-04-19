@@ -49,12 +49,14 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     private JLabel label;
     boolean done = false;
     CardLayout cl;
+    CLayout layout;
     JPanel panelContainer;
 
-    public MainGameScreen( ImageLoader imgLoader, CardLayout cl, final JPanel panelContainer ){
+    public MainGameScreen( ImageLoader imgLoader, CLayout layout, final JPanel panelContainer ){
         addMouseListener(this);
         addMouseMotionListener(this);
-        this.cl = cl;
+        this.layout = layout;
+        this.cl = layout.cl;
         this.panelContainer = panelContainer;
 
         // Label in top right
@@ -78,7 +80,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         maskMat = imageLoader.getMatrix("mask");
         revealMask = imageLoader.getMatrix("reveal");
         destination = imageLoader.getMatrix("destination");
-        fadedCircleMask = Mat.zeros( 1080, 1920, 0);
+        fadedCircleMask = Mat.zeros(1080, 1920, 0);
         fadedCircleMat = imageLoader.getMatrix("above");
 
         // Load to BufferedImage
@@ -198,7 +200,10 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         try {
             Thread.sleep( 1000 );
             this.dispose();
-            cl.show( panelContainer, "4" );
+            GuessingScreen guessingPanel = new GuessingScreen(this.layout, panelContainer);
+            panelContainer.add( guessingPanel, "4" );
+            cl.show(panelContainer, "4");
+            //cl.removeLayoutComponent((guessingPanel));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

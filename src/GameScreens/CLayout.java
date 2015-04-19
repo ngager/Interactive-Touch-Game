@@ -19,8 +19,8 @@ public class CLayout extends JFrame {
     private JPanel panelContainer = new JPanel();
     // Game screens
     WelcomeScreen welcomePanel = new WelcomeScreen(cl, panelContainer);
-    private InstructionDifficultyScreen difficultyPanel = new InstructionDifficultyScreen(cl, panelContainer);
-    private GuessingScreen guessingPanel = new GuessingScreen(this, panelContainer);
+    private InstructionDifficultyScreen difficultyPanel = new InstructionDifficultyScreen(this, panelContainer);
+    //private GuessingScreen guessingPanel = new GuessingScreen(this, panelContainer);
     private ResultsScreen resultsPanel = new ResultsScreen(cl, panelContainer);
     String curPanel = "";
 
@@ -32,7 +32,7 @@ public class CLayout extends JFrame {
         panelContainer.add( welcomePanel, "1" );
         panelContainer.add( difficultyPanel, "2" );
         panelContainer.add( resultsPanel, "3");
-        panelContainer.add( guessingPanel, "4" );
+//        panelContainer.add( guessingPanel, "4" );
         /**
          * show the starting panel (welcome screen number)
          */
