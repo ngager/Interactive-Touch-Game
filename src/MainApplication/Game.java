@@ -22,9 +22,9 @@ public class Game {
         // Point to the files you would like to use for the display!
         // To switch levels all you have to do is change these three lines!
         // Don't substring this on a mac
-        abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath().substring(1);
-        belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath().substring(1);
-        maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath().substring(1);
+        abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath().substring(0);
+        belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath().substring(0);
+        maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath().substring(0);
         // Create an ImageLoader to load all of the pictures for us.
         imgLoader = new ImageLoader( abovePath, belowPath, maskPath );
 
@@ -39,6 +39,5 @@ public class Game {
     public static void main( String[] args ){
         // Load the openCV library
         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-        //new Game(cl, panelContainer);
     }
 }

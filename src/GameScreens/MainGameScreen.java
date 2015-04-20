@@ -91,13 +91,16 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         Random randY = new Random();
         int x, y;
         for( int r = 0; r < NUM_OBJECTS; r++ ){
-            x = randX.nextInt( 1820 + 1 );
-            y = randY.nextInt( 980 + 1  );
+            // DEMO, FIXED RANGE
+            // 1620 - 250 + 1 +250
+            x = randX.nextInt( (1620-250)+1) + 250;
+            y = randY.nextInt( (980-150) +1) + 150;
 
             // Make sure we don't place on land
             double checkMask[] = maskMat.get( y, x );
             if( checkMask[0] == 0.0 && checkMask[1] == 0.0 && checkMask[2] == 0.0){
                 System.out.println( "woops, on land" );
+                System.out.println( x + ", " +  y );
                 r--;
             }else {
                 randomX[r] = x;
@@ -106,7 +109,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         }
         // Print out the flag locations
         for( int f = 0; f < flagImages.length; f++ ){
-            //System.out.println( randomX[f] + ", " +  randomY[f] );
+            System.out.println( randomX[f] + ", " +  randomY[f] );
             flagImages[f] = new DebrisFlagger(randomX[f], randomY[f]);
         }
 
@@ -189,7 +192,6 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
 
             }
         });
-
         panel.setLayout(null);
         panel.add( label );
         dragBoat = new DraggableBoat(1000, 500);
@@ -198,11 +200,13 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
 
     public void startGuessing(){
         try {
-            Thread.sleep( 1000 );
-            this.dispose();
+            Thread.sleep(1000);
+            //this.dispose();
             GuessingScreen guessingPanel = new GuessingScreen(this.layout, panelContainer);
             panelContainer.add( guessingPanel, "4" );
             cl.show(panelContainer, "4");
+            this.add(panelContainer);
+//            this.layout.setFullScreen( this.layout.dm );
             //cl.removeLayoutComponent((guessingPanel));
         } catch (InterruptedException e) {
             e.printStackTrace();

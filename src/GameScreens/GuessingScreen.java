@@ -21,6 +21,8 @@ public class GuessingScreen extends JPanel implements MouseListener{
     JPanel panelContainer;
     int imageX = 1295 + 10;
     int image1Y = 162 + 10, image2Y = 380 + 10, image3Y = 598 + 10, image4Y = 816 + 10;
+    int leftScanX = 356;
+    int leftScanY = 426;
     private final int NUM_OBJECTS = 5;
     BufferedImage leftScan;
     String leftScanName;
@@ -178,7 +180,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
                 }
             }
         }
-        g2.drawImage( leftScan, 500, 500, 400, 400, this);
+        g2.drawImage( leftScan, leftScanX, leftScanY, 400, 400, this);
     }
 
     // Don't even need to check mouse click coordinates because the buttons take care of it
@@ -193,6 +195,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
                 if( guessOptions[guessIndeces[0]].getName().equals(leftScanName) ){
                     System.out.println("RIGHT");
                     userScore++;
+                    newRound();
                 }else System.out.println( "WRONG" );
             }
             // BUTTON 2
@@ -200,6 +203,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
                 if( guessOptions[guessIndeces[1]].getName().equals(leftScanName) ){
                     System.out.println( "RIGHT" );
                     userScore++;
+                    newRound();
                 }else System.out.println( "WRONG" );
             }
             // BUTTON 3
@@ -207,6 +211,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
                 if( guessOptions[guessIndeces[2]].getName().equals(leftScanName) ){
                     System.out.println( "RIGHT" );
                     userScore++;
+                    newRound();
                 }else System.out.println( "WRONG" );
             }
             // BUTTON 4
@@ -214,9 +219,9 @@ public class GuessingScreen extends JPanel implements MouseListener{
                 if( guessOptions[guessIndeces[3]].getName().equals(leftScanName) ){
                     System.out.println( "RIGHT" );
                     userScore++;
+                    newRound();
                 }else System.out.println( "WRONG" );
             }
-            newRound();
         }
     }
 

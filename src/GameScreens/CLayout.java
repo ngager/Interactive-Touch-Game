@@ -12,7 +12,7 @@ public class CLayout extends JFrame {
     // Graphics utils
     private GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
     private GraphicsDevice vc = env.getDefaultScreenDevice();
-    private DisplayMode dm = vc.getDisplayMode();
+    public DisplayMode dm = vc.getDisplayMode();
 
     public CardLayout cl = new CardLayout();
     // Container panel
@@ -45,7 +45,7 @@ public class CLayout extends JFrame {
     }
 
     // Build a window and convert to full screen
-    public void setFullScreen( DisplayMode dm){
+    public void setFullScreen( DisplayMode dm ){
         this.setUndecorated(true);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.pack();
