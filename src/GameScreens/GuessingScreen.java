@@ -195,8 +195,8 @@ public class GuessingScreen extends JPanel implements MouseListener{
                 if( guessOptions[guessIndeces[0]].getName().equals(leftScanName) ){
                     System.out.println("RIGHT");
                     userScore++;
-                    newRound();
                 }else System.out.println( "WRONG" );
+                newRound();
             }
             // BUTTON 2
             else if( curY > image2Y && curY < (image2Y+200)){
@@ -205,6 +205,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
                     userScore++;
                     newRound();
                 }else System.out.println( "WRONG" );
+                newRound();
             }
             // BUTTON 3
             else if( curY > image3Y && curY < (image3Y+200)){
@@ -213,6 +214,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
                     userScore++;
                     newRound();
                 }else System.out.println( "WRONG" );
+                newRound();
             }
             // BUTTON 4
             else if( curY > image4Y && curY < (image4Y+200)){
@@ -221,6 +223,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
                     userScore++;
                     newRound();
                 }else System.out.println( "WRONG" );
+                newRound();
             }
         }
     }

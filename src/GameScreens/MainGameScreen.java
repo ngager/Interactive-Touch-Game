@@ -59,15 +59,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         this.cl = layout.cl;
         this.panelContainer = panelContainer;
 
-        // Label in top right
-        label = new JLabel();
-        label.setSize(200, 100);
-        label.setLocation(1700, 20);
-        label.setOpaque(true);
-        label.setBackground(Color.GRAY.brighter());
-        label.setForeground(Color.BLACK);
-        label.setFont(new Font("Arial", 1, 24));
-        label.setText("<html>Found: " + foundCount + "<br>Remaining: " + (NUM_OBJECTS - foundCount) + "</html>");
+        setupCounter();
 
         flagImages = new DebrisFlagger[NUM_OBJECTS];
         randomX = new int[NUM_OBJECTS];
@@ -86,32 +78,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         // Load to BufferedImage
         destImage = imageLoader.getImage ( destination );
 
-        // Place random flags
-        Random randX = new Random();
-        Random randY = new Random();
-        int x, y;
-        for( int r = 0; r < NUM_OBJECTS; r++ ){
-            // DEMO, FIXED RANGE
-            // 1620 - 250 + 1 +250
-            x = randX.nextInt( (1620-250)+1) + 250;
-            y = randY.nextInt( (980-150) +1) + 150;
-
-            // Make sure we don't place on land
-            double checkMask[] = maskMat.get( y, x );
-            if( checkMask[0] == 0.0 && checkMask[1] == 0.0 && checkMask[2] == 0.0){
-                System.out.println( "woops, on land" );
-                System.out.println( x + ", " +  y );
-                r--;
-            }else {
-                randomX[r] = x;
-                randomY[r] = y;
-            }
-        }
-        // Print out the flag locations
-        for( int f = 0; f < flagImages.length; f++ ){
-            System.out.println( randomX[f] + ", " +  randomY[f] );
-            flagImages[f] = new DebrisFlagger(randomX[f], randomY[f]);
-        }
+         placeFlags();
 
         // JPanel
         this.getContentPane().add(panel = new JPanel() {
@@ -129,8 +96,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
                 if( done ){
                     startGuessing();
                 }
-
-                label.setText( "<html>Found: " + foundCount + "<br>Remaining: " + (NUM_OBJECTS-foundCount) + "</html>" );
+                updateCounterText();
 
                 // Calculate the new pixels for the background
                 if (globalPoint != null) {
@@ -184,10 +150,9 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
 
                 // WE ARE DONE HERE
                 if( foundCount == NUM_OBJECTS ){
-                    label.setBackground(Color.YELLOW);
-                    label.setText("<html><br>All objects found!</html>");
                     System.out.println("*** FOUND ALL *** ");
                     done = true;
+                    updateCounterText();
                 }
 
             }
@@ -198,15 +163,81 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         dragPlane = new DraggablePlane(100, 200);
     }
 
+    public void setupCounter(){
+        // Label in top right
+        label = new JLabel();
+        label.setSize(200, 100);
+        label.setLocation(1700, 20);
+        label.setOpaque(true);
+        //Icon (background)
+        ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("counterBackground.png")));
+        label.setIcon( icon );
+        // Set up the text
+        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Arial", 1, 24));
+        label.setText("<html>   Found: " + foundCount + "<br>Remaining: " + (NUM_OBJECTS - foundCount) + "</html>");
+        label.setHorizontalTextPosition(JLabel.CENTER);
+    }
+
+    public void updateCounterText(){
+        if( done ){
+            ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("counterBackgroundDone.png")));
+            label.setIcon( icon );
+            label.setText("<html>   All objects found!</html>");
+        }else{
+            label.setText( "<html>   Found: " + foundCount + "<br>Remaining: " + (NUM_OBJECTS-foundCount) + "</html>" );
+        }
+        label.setHorizontalTextPosition(JLabel.CENTER);
+    }
+
+    public void placeFlags(){
+//        for( int r = 0; r < NUM_OBJECTS; r++ ){
+//            // DEMO, FIXED RANGE
+//            // 1620 - 250 + 1 +250
+//            x = randX.nextInt( (1620-250)+1) + 250;
+//            y = randY.nextInt( (980-150) +1) + 150;
+//
+//            // Make sure we don't place on land
+//            double checkMask[] = maskMat.get( y, x );
+//            if( checkMask[0] == 0.0 && checkMask[1] == 0.0 && checkMask[2] == 0.0){
+//                System.out.println( "woops, on land" );
+//                System.out.println( x + ", " +  y );
+//                r--;
+//            }else {
+//                randomX[r] = x;
+//                randomY[r] = y;
+//            }
+//        }
+
+        // CURRENTLY USING FIXED POINTS JUST FOR DEMO PURPOSES:
+        randomX[0] = 375;
+        randomX[1] = 760;
+        randomX[2] = 1100;
+        randomX[3] = 1530;
+        randomX[4] = 1090;
+
+        randomY[0] = 300;
+        randomY[1] = 750;
+        randomY[2] = 800;
+        randomY[3] = 480;
+        randomY[4] = 280;
+
+        // Print out the flag locations AND MAKE FLAGS
+        for( int f = 0; f < flagImages.length; f++ ){
+            System.out.println( randomX[f] + ", " +  randomY[f] );
+            flagImages[f] = new DebrisFlagger(randomX[f], randomY[f]);
+        }
+    }
+
     public void startGuessing(){
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
             //this.dispose();
             GuessingScreen guessingPanel = new GuessingScreen(this.layout, panelContainer);
             panelContainer.add( guessingPanel, "4" );
             cl.show(panelContainer, "4");
             this.add(panelContainer);
-//            this.layout.setFullScreen( this.layout.dm );
+            //this.layout.setFullScreen( this.layout.dm );
             //cl.removeLayoutComponent((guessingPanel));
         } catch (InterruptedException e) {
             e.printStackTrace();
