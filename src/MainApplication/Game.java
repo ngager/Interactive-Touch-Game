@@ -21,10 +21,20 @@ public class Game {
     public Game(CLayout layout, JPanel panelContainer ){
         // Point to the files you would like to use for the display!
         // To switch levels all you have to do is change these three lines!
-        // Don't substring this on a mac
-        abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath().substring(0);
-        belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath().substring(0);
-        maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath().substring(0);
+        abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath();
+        belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath();
+        maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath();
+        String os = System.getProperty( ("os.name") );
+        if( os.contains("Windows") ){
+            abovePath = abovePath.substring(1);
+            belowPath = belowPath.substring(1);
+            maskPath = maskPath.substring(1);
+        }else if( os.contains("Mac") ){
+            abovePath = abovePath.substring(0);
+            belowPath = belowPath.substring(0);
+            maskPath = maskPath.substring(0);
+        }
+
         // Create an ImageLoader to load all of the pictures for us.
         imgLoader = new ImageLoader( abovePath, belowPath, maskPath );
 
