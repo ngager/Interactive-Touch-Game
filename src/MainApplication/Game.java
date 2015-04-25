@@ -24,6 +24,7 @@ public class Game {
         abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath();
         belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath();
         maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath();
+
         String os = System.getProperty( ("os.name") );
         if( os.contains("Windows") ){
             abovePath = abovePath.substring(1);
@@ -38,12 +39,10 @@ public class Game {
         // Create an ImageLoader to load all of the pictures for us.
         imgLoader = new ImageLoader( abovePath, belowPath, maskPath );
 
-        // Grab the current display and graphics device being used
-        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice vc = env.getDefaultScreenDevice();
-        DisplayMode dm = vc.getDisplayMode();
+        // Create the new game panel!
         MainGameScreen w = new MainGameScreen( imgLoader, layout, panelContainer );
-        w.run( dm );
+        layout.panelContainer.add(w, "5");
+        layout.cl.show(panelContainer, "5");
     }
 
     public static void main( String[] args ){

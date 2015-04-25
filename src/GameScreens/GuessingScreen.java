@@ -20,7 +20,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
     CLayout layout;
     JPanel panelContainer;
     int imageX = 1295 + 10;
-    int image1Y = 162 + 10, image2Y = 380 + 10, image3Y = 598 + 10, image4Y = 816 + 10;
+    int image1Y = 162 + 5, image2Y = 380 + 5, image3Y = 598 + 5, image4Y = 816 + 5;
     int leftScanX = 356;
     int leftScanY = 426;
     private final int NUM_OBJECTS = 5;
@@ -97,6 +97,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
                 }
             }
         }
+
         // Create the random indeces for each guess object
         i = 0;
         while( true ){
@@ -104,7 +105,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
             if( guessIndeces[0] != index && guessIndeces[1] != index && guessIndeces[2] != index && guessIndeces[3] != index ){
                 guessIndeces[i] = index;
                 i++;
-                if( i == 3 ) break; //TODO this part seems sketchy to me
+                if( i == 3 ) break; //TODO this part seems sketchy
             }
         }
 
@@ -196,35 +197,29 @@ public class GuessingScreen extends JPanel implements MouseListener{
                     System.out.println("RIGHT");
                     userScore++;
                 }else System.out.println( "WRONG" );
-                newRound();
             }
             // BUTTON 2
             else if( curY > image2Y && curY < (image2Y+200)){
                 if( guessOptions[guessIndeces[1]].getName().equals(leftScanName) ){
                     System.out.println( "RIGHT" );
                     userScore++;
-                    newRound();
                 }else System.out.println( "WRONG" );
-                newRound();
             }
             // BUTTON 3
             else if( curY > image3Y && curY < (image3Y+200)){
                 if( guessOptions[guessIndeces[2]].getName().equals(leftScanName) ){
                     System.out.println( "RIGHT" );
                     userScore++;
-                    newRound();
                 }else System.out.println( "WRONG" );
-                newRound();
             }
             // BUTTON 4
             else if( curY > image4Y && curY < (image4Y+200)){
                 if( guessOptions[guessIndeces[3]].getName().equals(leftScanName) ){
                     System.out.println( "RIGHT" );
                     userScore++;
-                    newRound();
                 }else System.out.println( "WRONG" );
-                newRound();
             }
+            newRound();
         }
     }
 

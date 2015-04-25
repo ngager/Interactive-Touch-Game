@@ -14,10 +14,6 @@ import java.awt.image.BufferedImage;
 public class InstructionDifficultyScreen extends JPanel implements MouseListener{
     // Path to background image
     Image background = Toolkit.getDefaultToolkit().createImage( getClass().getClassLoader().getResource("hurricane_template_instructions.png") );
-    // BufferedImages to be used as button icons
-    BufferedImage buttonIcon1 = null, buttonIcon2 = null, buttonIcon3 = null;
-    // THree play game buttons
-    JButton button1, button2, button3;
     JPanel panelContainer;
     CardLayout cl;
     CLayout layout;
@@ -44,17 +40,17 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-
+        //TODO -- use real coords
         // Level 1
-        if( (x >= 1695 && x <= 1820) && (y >= 415 && y <= 540) ){
+        if( (x >= 1670 && x <= 1850) && (y >= 415 && y <= 540) ){
             new Game( layout, panelContainer );
         }
         // Level 2
-        else if( (x >= 1695 && x <= 1820) && (y >= 632 && y <= 757) ){
+        else if( (x >= 1670 && x <= 1850) && (y >= 632 && y <= 757) ){
             new Game( layout, panelContainer );
         }
         // Level 3
-        else if( (x >= 1695 && x <= 1820) && (y >= 859 && y <= 984) ){
+        else if( (x >= 1670 && x <= 1850) && (y >= 859 && y <= 984) ){
             new Game( layout, panelContainer );
         }
     }

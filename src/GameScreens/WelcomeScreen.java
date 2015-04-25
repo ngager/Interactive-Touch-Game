@@ -46,7 +46,8 @@ public class WelcomeScreen extends JPanel implements MouseListener, ActionListen
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        if( (x >= 845 && x <= 1060) && (y > 845 && y < 990) ){
+        //TODO -- real coords
+        if( (x >= 845 && x <= 1100) && (y >= 845 && y <= 1000) ){
             layout.show(panelContainer, "2");
        }
     }

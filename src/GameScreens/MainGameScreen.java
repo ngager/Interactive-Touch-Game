@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -21,7 +23,7 @@ import java.util.Random;
 /**
  * Created by danny on 2/26/15.
  */
-public class MainGameScreen extends ScreenUtility.FullScreen {
+public class MainGameScreen extends JPanel implements MouseListener, MouseMotionListener {
     private DraggableBoat dragBoat;
     private DraggablePlane dragPlane;
     private boolean boatActive = false, planeActive = false;
@@ -45,7 +47,6 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     private int circleRadius = 50;
     private ImageLoader imageLoader;
     public org.opencv.core.Point globalPoint;
-    private JPanel panel;
     private JLabel label;
     boolean done = false;
     CardLayout cl;
@@ -78,89 +79,91 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         // Load to BufferedImage
         destImage = imageLoader.getImage ( destination );
 
-         placeFlags();
+        placeFlags();
 
-        // JPanel
-        this.getContentPane().add(panel = new JPanel() {
-            @Override
-            public void update(Graphics g) {
-                paintComponent(g);
-            }
-            // Displays the screen
-            public void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                super.paintComponent(g2);
-
-                // FOUND ALL
-                if( done ){
-                    startGuessing();
-                }
-                updateCounterText();
-
-                // Calculate the new pixels for the background
-                if (globalPoint != null) {
-                    imageLoader.checkPixels(revealMask, destination, globalPoint, boatActive, planeActive);
-                    destination = imageLoader.addFade( fadedCircleMask, destination, globalPoint, planeActive, boatActive, fadedCircleMat );
-                }
-                // Render the new image
-                destImage = imageLoader.getImage(destination);
-                // Draw background
-                g2.drawImage(destImage, 0, 0, null);
-                // Draw flags
-                if( globalDragEvent != null ){
-                    for( DebrisFlagger f : flagImages) {
-                        if (f.bounds.getBounds().contains(globalDragEvent.getPoint()) && !f.uncovered) {
-                            f.uncovered = true;
-                            foundCount++;
-                        }
-                        if( f.uncovered ){
-                            g2.drawImage(f.img, f.x, f.y, null);
-                            f.bounds.setBounds(f.x, f.y, f.width, f.height);
-                        }
-                    }
-                }
-                // Draw plane and boat in beginning
-                if( !boatActive && !planeActive ){
-                    // Draw plane
-                    g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
-                    dragPlane.bounds.setBounds(dragPlane.x, dragPlane.y, dragPlane.width, dragPlane.height);
-                    // Draw boat
-                    g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
-                    dragBoat.bounds.setBounds(dragBoat.x, dragBoat.y, dragBoat.width, dragBoat.height);
-                }
-                // Need to save the old transformation or else the buttons get messed up
-                AffineTransform oldXForm = g2.getTransform();
-                if( boatActive && !planeActive){
-                    if( !onLand && !onShallow)
-                        g2.rotate(Math.toRadians(angle), dragBoat.x + 100, dragBoat.y + 100);
-                    g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
-                    dragBoat.bounds.setBounds(dragBoat.x, dragBoat.y, dragBoat.width, dragBoat.height);
-                    // Restore to normal transformation
-                    g2.setTransform( oldXForm );
-                    g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
-                }else if( planeActive && !boatActive){
-                    g2.rotate(Math.toRadians(angle), dragPlane.x + 100, dragPlane.y + 100);
-                    g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
-                    dragPlane.bounds.setBounds(dragPlane.x, dragPlane.y, dragPlane.width, dragPlane.height);
-                    // Restore to normal transformation
-                    g2.setTransform( oldXForm );
-                    g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
-                }
-
-                // WE ARE DONE HERE
-                if( foundCount == NUM_OBJECTS ){
-                    System.out.println("*** FOUND ALL *** ");
-                    done = true;
-                    updateCounterText();
-                }
-
-            }
-        });
-        panel.setLayout(null);
-        panel.add( label );
+        this.setLayout(null);
+        this.add( label );
         dragBoat = new DraggableBoat(1000, 500);
         dragPlane = new DraggablePlane(100, 200);
+    }
+
+
+    @Override
+    public void update(Graphics g) {
+        paintComponent(g);
+    }
+    // Displays the screen
+    public void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        super.paintComponent(g2);
+
+        // FOUND ALL
+        if( done ){
+            startGuessing();
+        }
+        updateCounterText();
+
+        // Calculate the new pixels for the background
+        if (globalPoint != null) {
+            imageLoader.checkPixels(revealMask, destination, globalPoint, boatActive, planeActive);
+            destination = imageLoader.addFade( fadedCircleMask, destination, globalPoint, planeActive, boatActive, fadedCircleMat );
+        }
+        // Render the new image
+        destImage = imageLoader.getImage(destination);
+        // Draw background
+        g2.drawImage(destImage, 0, 0, null);
+        // Draw flags
+        if( globalDragEvent != null ){
+            for( DebrisFlagger f : flagImages) {
+                if (f.bounds.getBounds().contains(globalDragEvent.getPoint()) && !f.uncovered) {
+                    f.uncovered = true;
+                    foundCount++;
+                }
+                if( f.uncovered ){
+                    g2.drawImage(f.img, f.x, f.y, null);
+                    f.bounds.setBounds(f.x, f.y, f.width, f.height);
+                }
+            }
+        }
+        // Draw plane and boat in beginning
+        if( !boatActive && !planeActive ){
+            // Draw plane
+            g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
+            dragPlane.bounds.setBounds(dragPlane.x, dragPlane.y, dragPlane.width, dragPlane.height);
+            // Draw boat
+            g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
+            dragBoat.bounds.setBounds(dragBoat.x, dragBoat.y, dragBoat.width, dragBoat.height);
+        }
+        // Need to save the old transformation or else the buttons get messed up
+        AffineTransform oldXForm = g2.getTransform();
+        if( boatActive && !planeActive){
+            if( !onLand && !onShallow)
+                g2.rotate(Math.toRadians(angle), dragBoat.x + 100, dragBoat.y + 100);
+            g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
+            dragBoat.bounds.setBounds(dragBoat.x, dragBoat.y, dragBoat.width, dragBoat.height);
+            // Restore to normal transformation
+            g2.setTransform( oldXForm );
+            g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
+        }else if( planeActive && !boatActive){
+            g2.rotate(Math.toRadians(angle), dragPlane.x + 100, dragPlane.y + 100);
+            g2.drawImage(dragPlane.img, dragPlane.x, dragPlane.y, null);
+            dragPlane.bounds.setBounds(dragPlane.x, dragPlane.y, dragPlane.width, dragPlane.height);
+            // Restore to normal transformation
+            g2.setTransform( oldXForm );
+            g2.drawImage(dragBoat.img, dragBoat.x, dragBoat.y, null);
+        }
+
+        // WE ARE DONE HERE
+        if( foundCount == NUM_OBJECTS ){
+            ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("counterBackgroundDone.png")));
+            label.setIcon( icon );
+            label.setText("<html>   All objects<br>   found!</html>");
+            label.setHorizontalTextPosition(JLabel.CENTER);
+            System.out.println("*** FOUND ALL *** ");
+            done = true;
+        }
+
     }
 
     public void setupCounter(){
@@ -180,35 +183,35 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
     }
 
     public void updateCounterText(){
-        if( done ){
-            ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("counterBackgroundDone.png")));
-            label.setIcon( icon );
-            label.setText("<html>   All objects found!</html>");
-        }else{
-            label.setText( "<html>   Found: " + foundCount + "<br>Remaining: " + (NUM_OBJECTS-foundCount) + "</html>" );
-        }
+//        if( done ){
+//            ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("counterBackgroundDone.png")));
+//            label.setIcon( icon );
+//            label.setText("<html>   All objects found!</html>");
+//        }else{
+        label.setText( "<html>   Found: " + foundCount + "<br>Remaining: " + (NUM_OBJECTS-foundCount) + "</html>" );
+        // }
         label.setHorizontalTextPosition(JLabel.CENTER);
     }
 
     public void placeFlags(){
+        // Place random flags
+//        Random randX = new Random();
+//        Random randY = new Random();
+//        int x, y;
 //        for( int r = 0; r < NUM_OBJECTS; r++ ){
-//            // DEMO, FIXED RANGE
-//            // 1620 - 250 + 1 +250
-//            x = randX.nextInt( (1620-250)+1) + 250;
-//            y = randY.nextInt( (980-150) +1) + 150;
+//            x = randX.nextInt( 1820 + 1 );
+//            y = randY.nextInt( 980 + 1  );
 //
 //            // Make sure we don't place on land
 //            double checkMask[] = maskMat.get( y, x );
 //            if( checkMask[0] == 0.0 && checkMask[1] == 0.0 && checkMask[2] == 0.0){
 //                System.out.println( "woops, on land" );
-//                System.out.println( x + ", " +  y );
 //                r--;
 //            }else {
 //                randomX[r] = x;
 //                randomY[r] = y;
 //            }
 //        }
-
         // CURRENTLY USING FIXED POINTS JUST FOR DEMO PURPOSES:
         randomX[0] = 375;
         randomX[1] = 760;
@@ -227,17 +230,29 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
             System.out.println( randomX[f] + ", " +  randomY[f] );
             flagImages[f] = new DebrisFlagger(randomX[f], randomY[f]);
         }
+        // Print out the flag locations
+        for( int f = 0; f < flagImages.length; f++ ){
+            //System.out.println( randomX[f] + ", " +  randomY[f] );
+            flagImages[f] = new DebrisFlagger(randomX[f], randomY[f]);
+        }
     }
 
     public void startGuessing(){
         try {
-            Thread.sleep(1500);
+            Thread.sleep( 1500 );
             //this.dispose();
+            // TODO -- right now we are making a brand new CardLayout, this sucks a lot.
+            //layout.dispose();
+            //layout = new CLayout();
+            //cl = layout.cl;
+            //panelContainer = layout.panelContainer;
             GuessingScreen guessingPanel = new GuessingScreen(this.layout, panelContainer);
-            panelContainer.add( guessingPanel, "4" );
+            panelContainer.add(guessingPanel, "4");
             cl.show(panelContainer, "4");
-            this.add(panelContainer);
-            //this.layout.setFullScreen( this.layout.dm );
+
+            //layout.setVisible(true);
+            //layout.setFullScreen( layout.dm );
+            //layout.enableOSXFullscreen(layout);
             //cl.removeLayoutComponent((guessingPanel));
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -253,7 +268,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
             curX = e.getX();
             curY = e.getY();
             // Rotate every other pixel
-            if( rotateBoat == 3 ){
+            if( rotateBoat == 1 ){
                 calculateRotation();
                 rotateBoat = 0;
             }
@@ -300,7 +315,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
             curX = e.getX();
             curY = e.getY();
             // Rotate every other pixel
-            if( rotatePlane == 3 ){
+            if( rotatePlane == 1 ){
                 calculateRotation();
                 rotatePlane = 0;
             }
@@ -341,6 +356,7 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         }
     }
 
+
     public void calculateRotation(){
         int dX = curX - oldX;
         int dY = curY - oldY;
@@ -350,10 +366,31 @@ public class MainGameScreen extends ScreenUtility.FullScreen {
         }
     }
 
-    public void actionPerformed(ActionEvent e) {
+    @Override
+    public void mouseMoved(MouseEvent e) {
 
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {}
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }

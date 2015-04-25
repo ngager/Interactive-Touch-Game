@@ -4,6 +4,7 @@ import org.opencv.core.Core;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Method;
 
 /**
  * Created by danny on 3/1/15.
@@ -16,7 +17,7 @@ public class CLayout extends JFrame {
 
     public CardLayout cl = new CardLayout();
     // Container panel
-    private JPanel panelContainer = new JPanel();
+    public JPanel panelContainer = new JPanel();
     // Game screens
     WelcomeScreen welcomePanel = new WelcomeScreen(cl, panelContainer);
     private InstructionDifficultyScreen difficultyPanel = new InstructionDifficultyScreen(this, panelContainer);
