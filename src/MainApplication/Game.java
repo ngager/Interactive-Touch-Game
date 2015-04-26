@@ -21,9 +21,18 @@ public class Game {
     public Game(CLayout layout, JPanel panelContainer ){
         // Point to the files you would like to use for the display!
         // To switch levels all you have to do is change these three lines!
-        abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath();
-        belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath();
-        maskPath  = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath();
+
+        if( layout.level1 ){
+            abovePath = getClass().getClassLoader().getResource("PortsmouthHarborEntrySat.png").getPath();
+            belowPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryBathy.png").getPath();
+            maskPath = getClass().getClassLoader().getResource("PortsmouthHarborEntryMask.png").getPath();
+            layout.level1 = false;
+        }else if( layout.level2 ){
+            abovePath = getClass().getClassLoader().getResource("Level1-Over.png").getPath();
+            belowPath = getClass().getClassLoader().getResource("Level1-Under.png").getPath();
+            maskPath = getClass().getClassLoader().getResource("Level1-Mask.png").getPath();
+            layout.level2 = false;
+        }
 
         String os = System.getProperty( ("os.name") );
         if( os.contains("Windows") ){
@@ -43,6 +52,9 @@ public class Game {
         MainGameScreen w = new MainGameScreen( imgLoader, layout, panelContainer );
         layout.panelContainer.add(w, "5");
         layout.cl.show(panelContainer, "5");
+
+
+
     }
 
     public static void main( String[] args ){
