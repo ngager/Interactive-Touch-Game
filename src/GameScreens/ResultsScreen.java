@@ -24,7 +24,7 @@ public class ResultsScreen extends JPanel implements MouseListener{
 
     public ResultsScreen(CardLayout c, JPanel panelContainer){
         addMouseListener( this );
-        this.setLayout( null );
+        this.setLayout(null);
         this.layout = c;
         this.panelContainer = panelContainer;
     }

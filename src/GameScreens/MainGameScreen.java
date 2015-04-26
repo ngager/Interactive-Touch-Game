@@ -82,9 +82,12 @@ public class MainGameScreen extends JPanel implements MouseListener, MouseMotion
         placeFlags();
 
         this.setLayout(null);
-        this.add( label );
+        this.add(label);
         dragBoat = new DraggableBoat(1000, 500);
         dragPlane = new DraggablePlane(100, 200);
+
+        // Setup Timer
+        new TimeoutHandler( layout, panelContainer );
     }
 
 

@@ -25,7 +25,10 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
         this.panelContainer = panelContainer;
 
         addMouseListener( this );
-        this.setLayout( null );
+        this.setLayout(null);
+
+        // Setup Timer
+        new TimeoutHandler( layout, panelContainer );
     }
     // Very fast and easy way to set a background image
     @Override
@@ -43,14 +46,17 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
         //TODO -- use real coords
         // Level 1
         if( (x >= 1670 && x <= 1850) && (y >= 415 && y <= 540) ){
+            layout.level1 = true;
             new Game( layout, panelContainer );
         }
         // Level 2
         else if( (x >= 1670 && x <= 1850) && (y >= 632 && y <= 757) ){
+            layout.level2 = true;
             new Game( layout, panelContainer );
         }
         // Level 3
         else if( (x >= 1670 && x <= 1850) && (y >= 859 && y <= 984) ){
+            layout.level3 = true;
             new Game( layout, panelContainer );
         }
     }

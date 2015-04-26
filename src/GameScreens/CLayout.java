@@ -24,6 +24,7 @@ public class CLayout extends JFrame {
     //private GuessingScreen guessingPanel = new GuessingScreen(this, panelContainer);
     private ResultsScreen resultsPanel = new ResultsScreen(cl, panelContainer);
     String curPanel = "";
+    public static Boolean level1, level2, level3;
 
     public CLayout(){
         panelContainer.setLayout(cl);
@@ -39,6 +40,11 @@ public class CLayout extends JFrame {
          */
         cl.show( panelContainer, "1");
         curPanel = "welcome";
+
+        // Initialize flags to indicate which level was selected
+        level1 = false;
+        level2 = false;
+        level3 = false;
 
         panelContainer.setSize(1920, 1080);
         this.add(panelContainer);

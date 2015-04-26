@@ -56,6 +56,9 @@ public class GuessingScreen extends JPanel implements MouseListener{
             i++;
         }
         randomizeObjects();
+
+        // Setup Timer
+        new TimeoutHandler( layout, panelContainer );
     }
 
     public void randomizeObjects(){
