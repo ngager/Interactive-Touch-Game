@@ -4,6 +4,7 @@ import org.opencv.core.Core;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.lang.reflect.Method;
 
 /**
@@ -22,9 +23,9 @@ public class CLayout extends JFrame {
     WelcomeScreen welcomePanel = new WelcomeScreen(cl, panelContainer);
     private InstructionDifficultyScreen difficultyPanel = new InstructionDifficultyScreen(this, panelContainer);
     //private GuessingScreen guessingPanel = new GuessingScreen(this, panelContainer);
-    private ResultsScreen resultsPanel = new ResultsScreen(cl, panelContainer);
+    private ResultsScreen resultsPanel = new ResultsScreen(this, panelContainer);
     String curPanel = "";
-    public static Boolean level1, level2, level3;
+    public static boolean level1, level2, level3;
 
     public CLayout(){
         panelContainer.setLayout(cl);
@@ -48,6 +49,16 @@ public class CLayout extends JFrame {
 
         panelContainer.setSize(1920, 1080);
         this.add(panelContainer);
+
+        Action reset = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                cl.show(panelContainer, "1");
+            }
+        };
+        new InactivityListener(this, reset, 1).start();
+
         setFullScreen( dm );
     }
 

@@ -8,7 +8,6 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,8 +16,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Random;
 
 /**
  * Created by danny on 2/26/15.
@@ -87,9 +84,16 @@ public class MainGameScreen extends JPanel implements MouseListener, MouseMotion
         dragPlane = new DraggablePlane(100, 200);
 
         // Setup Timer
-        new TimeoutHandler( layout, panelContainer );
+        //new InactivityListener( layout, panelContainer );
+        Action reset = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                cl.show(panelContainer, "1");
+            }
+        };
+        new InactivityListener(this.layout, reset, 1).start();
     }
-
 
     @Override
     public void update(Graphics g) {

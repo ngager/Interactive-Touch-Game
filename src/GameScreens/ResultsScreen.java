@@ -19,14 +19,25 @@ public class ResultsScreen extends JPanel implements MouseListener{
     private int finalScore;
     private int possibleTotal;
     private float percent;
-    CardLayout layout;
+    CLayout layout;
+    CardLayout cl;
     JPanel panelContainer;
 
-    public ResultsScreen(CardLayout c, JPanel panelContainer){
+    public ResultsScreen(final CLayout layout, final JPanel panelContainer){
         addMouseListener( this );
         this.setLayout(null);
-        this.layout = c;
+        this.layout = layout;
+        this.cl = layout.cl;
         this.panelContainer = panelContainer;
+
+        Action reset = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                cl.show(panelContainer, "1");
+            }
+        };
+        new InactivityListener(this.layout, reset, 1).start();
     }
 
     public void setResults( int score, int total ){
@@ -68,7 +79,7 @@ public class ResultsScreen extends JPanel implements MouseListener{
         int y = e.getY();
         //TODO -- real coords
         if( (x >= 845 && x <= 1100) && (y >= 845 && y <= 1000) ){
-            layout.show(panelContainer, "2");
+            cl.show(panelContainer, "2");
         }
     }
 

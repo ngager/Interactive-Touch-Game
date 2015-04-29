@@ -4,9 +4,9 @@ import MainApplication.Game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 
 /**
  * Created by danny vasta on 2/26/15.
@@ -19,7 +19,7 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
     CLayout layout;
     Rectangle r1, r2, r3;
 
-    public InstructionDifficultyScreen(CLayout layout, JPanel panelContainer) {
+    public InstructionDifficultyScreen(final CLayout layout, final JPanel panelContainer) {
         this.cl = layout.cl;
         this.layout = layout;
         this.panelContainer = panelContainer;
@@ -28,14 +28,22 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
         this.setLayout(null);
 
         // Setup Timer
-        new TimeoutHandler( layout, panelContainer );
+        //new InactivityListener( layout, panelContainer );
+
     }
     // Very fast and easy way to set a background image
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
-
+        Action reset = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                cl.show(panelContainer, "1");
+            }
+        };
+        new InactivityListener(this.layout, reset, 1).start();
     }
 
     // Pseudo-buttons
@@ -47,15 +55,21 @@ public class InstructionDifficultyScreen extends JPanel implements MouseListener
         // Level 1
         if( (x >= 1670 && x <= 1850) && (y >= 415 && y <= 540) ){
             layout.level1 = true;
+            layout.level2 = false;
+            layout.level3 = false;
             new Game( layout, panelContainer );
         }
         // Level 2
         else if( (x >= 1670 && x <= 1850) && (y >= 632 && y <= 757) ){
+            layout.level1 = false;
             layout.level2 = true;
+            layout.level3 = false;
             new Game( layout, panelContainer );
         }
         // Level 3
         else if( (x >= 1670 && x <= 1850) && (y >= 859 && y <= 984) ){
+            layout.level1 = false;
+            layout.level2 = false;
             layout.level3 = true;
             new Game( layout, panelContainer );
         }

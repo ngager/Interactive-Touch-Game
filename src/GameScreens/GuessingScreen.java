@@ -5,6 +5,7 @@ import Objects.ScanObjects;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -18,6 +19,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
     // Path to background image
     Image background = Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("hurricane_template_guessing.png"));
     CLayout layout;
+    CardLayout cl;
     JPanel panelContainer;
     int imageX = 1295 + 10;
     int image1Y = 162 + 5, image2Y = 380 + 5, image3Y = 598 + 5, image4Y = 816 + 5;
@@ -36,10 +38,11 @@ public class GuessingScreen extends JPanel implements MouseListener{
     int pastIndex = 0;
     int userScore = 0;
 
-    public GuessingScreen(CLayout layout, JPanel panelContainer) {
+    public GuessingScreen(final CLayout layout, final JPanel panelContainer) {
         addMouseListener(this);
         this.setLayout(null);
         this.layout = layout;
+        this.cl = layout.cl;
         this.panelContainer = panelContainer;
 
         // Set up all of the game objects
@@ -58,7 +61,15 @@ public class GuessingScreen extends JPanel implements MouseListener{
         randomizeObjects();
 
         // Setup Timer
-        new TimeoutHandler( layout, panelContainer );
+        //new InactivityListener( layout, panelContainer );
+        Action reset = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                cl.show(panelContainer, "1");
+            }
+        };
+        new InactivityListener(this.layout, reset, 1).start();
     }
 
     public void randomizeObjects(){

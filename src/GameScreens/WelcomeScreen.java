@@ -49,7 +49,7 @@ public class WelcomeScreen extends JPanel implements MouseListener, ActionListen
         //TODO -- real coords
         if( (x >= 845 && x <= 1100) && (y >= 845 && y <= 1000) ){
             layout.show(panelContainer, "2");
-       }
+        }
     }
 
     @Override

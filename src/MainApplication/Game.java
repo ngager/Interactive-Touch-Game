@@ -32,6 +32,11 @@ public class Game {
             belowPath = getClass().getClassLoader().getResource("Level1-Under.png").getPath();
             maskPath = getClass().getClassLoader().getResource("Level1-Mask.png").getPath();
             layout.level2 = false;
+        }else if( layout.level3 ){
+            abovePath = getClass().getClassLoader().getResource("Level3-Over.png").getPath();
+            belowPath = getClass().getClassLoader().getResource("Level3-Under.png").getPath();
+            maskPath = getClass().getClassLoader().getResource("Level3-Mask.png").getPath();
+            layout.level3 = false;
         }
 
         String os = System.getProperty( ("os.name") );
