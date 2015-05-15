@@ -5,6 +5,7 @@ import Objects.ScanObjects;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -18,9 +19,10 @@ public class GuessingScreen extends JPanel implements MouseListener{
     // Path to background image
     Image background = Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("hurricane_template_guessing.png"));
     CLayout layout;
+    CardLayout cl;
     JPanel panelContainer;
     int imageX = 1295 + 10;
-    int image1Y = 162 + 10, image2Y = 380 + 10, image3Y = 598 + 10, image4Y = 816 + 10;
+    int image1Y = 162 + 5, image2Y = 380 + 5, image3Y = 598 + 5, image4Y = 816 + 5;
     int leftScanX = 356;
     int leftScanY = 426;
     private final int NUM_OBJECTS = 5;
@@ -36,10 +38,11 @@ public class GuessingScreen extends JPanel implements MouseListener{
     int pastIndex = 0;
     int userScore = 0;
 
-    public GuessingScreen(CLayout layout, JPanel panelContainer) {
+    public GuessingScreen(final CLayout layout, final JPanel panelContainer) {
         addMouseListener(this);
         this.setLayout(null);
         this.layout = layout;
+        this.cl = layout.cl;
         this.panelContainer = panelContainer;
 
         // Set up all of the game objects
@@ -56,6 +59,17 @@ public class GuessingScreen extends JPanel implements MouseListener{
             i++;
         }
         randomizeObjects();
+
+        // Setup Timer
+        //new InactivityListener( layout, panelContainer );
+        Action reset = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                cl.show(panelContainer, "1");
+            }
+        };
+        new InactivityListener(this.layout, reset, 1).start();
     }
 
     public void randomizeObjects(){
@@ -97,6 +111,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
                 }
             }
         }
+
         // Create the random indeces for each guess object
         i = 0;
         while( true ){
@@ -104,7 +119,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
             if( guessIndeces[0] != index && guessIndeces[1] != index && guessIndeces[2] != index && guessIndeces[3] != index ){
                 guessIndeces[i] = index;
                 i++;
-                if( i == 3 ) break; //TODO this part seems sketchy to me
+                if( i == 3 ) break; //TODO this part seems sketchy
             }
         }
 

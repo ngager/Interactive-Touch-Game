@@ -4,6 +4,8 @@ import org.opencv.core.Core;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.lang.reflect.Method;
 
 /**
  * Created by danny on 3/1/15.
@@ -12,17 +14,18 @@ public class CLayout extends JFrame {
     // Graphics utils
     private GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
     private GraphicsDevice vc = env.getDefaultScreenDevice();
-    private DisplayMode dm = vc.getDisplayMode();
+    public DisplayMode dm = vc.getDisplayMode();
 
     public CardLayout cl = new CardLayout();
     // Container panel
-    private JPanel panelContainer = new JPanel();
+    public JPanel panelContainer = new JPanel();
     // Game screens
     WelcomeScreen welcomePanel = new WelcomeScreen(cl, panelContainer);
     private InstructionDifficultyScreen difficultyPanel = new InstructionDifficultyScreen(this, panelContainer);
     //private GuessingScreen guessingPanel = new GuessingScreen(this, panelContainer);
-    private ResultsScreen resultsPanel = new ResultsScreen(cl, panelContainer);
+    private ResultsScreen resultsPanel = new ResultsScreen(this, panelContainer);
     String curPanel = "";
+    public static boolean level1, level2, level3;
 
     public CLayout(){
         panelContainer.setLayout(cl);
@@ -39,13 +42,28 @@ public class CLayout extends JFrame {
         cl.show( panelContainer, "1");
         curPanel = "welcome";
 
+        // Initialize flags to indicate which level was selected
+        level1 = false;
+        level2 = false;
+        level3 = false;
+
         panelContainer.setSize(1920, 1080);
         this.add(panelContainer);
+
+        Action reset = new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                cl.show(panelContainer, "1");
+            }
+        };
+        new InactivityListener(this, reset, 1).start();
+
         setFullScreen( dm );
     }
 
     // Build a window and convert to full screen
-    public void setFullScreen( DisplayMode dm){
+    public void setFullScreen( DisplayMode dm ){
         this.setUndecorated(true);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.pack();
