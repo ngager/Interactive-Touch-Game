@@ -13,14 +13,17 @@ public class GuessObjects {
 
     private String IMG_PATH;
     private String name;
+    private int key;
     public BufferedImage img;
     public int x, y, height, width;
     public Rectangle bounds;
 
-    public GuessObjects(String name){
+    public GuessObjects(String name, int num){
 
         this.name = name;
-        IMG_PATH = System.getProperty("user.dir") + "\\Images\\GuessImages\\" + name + "_sm.png";
+        this.key = num;
+        IMG_PATH = name;
+        System.out.println( IMG_PATH );
         try {
             img = ImageIO.read(new File(IMG_PATH));
             width = img.getWidth();
@@ -37,6 +40,10 @@ public class GuessObjects {
 
     public String getName(){
         return name;
+    }
+
+    public int getKey() {
+        return key;
     }
 
 }

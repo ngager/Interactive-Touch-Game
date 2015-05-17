@@ -11,16 +11,19 @@ import java.io.IOException;
  */
 public class ScanObjects {
 
-
     private String IMG_PATH;
     private String name;
+    private int key;
     public BufferedImage img;
     public int x, y, height, width;
     public Rectangle bounds;
-    public ScanObjects(String name){
+
+    public ScanObjects(String name, int num){
 
         this.name = name;
-        IMG_PATH = System.getProperty("user.dir") + "\\Images\\ScanImages\\" + name + "_scan.png";
+        this.key = num;
+        IMG_PATH = name;
+        System.out.println( IMG_PATH );
         try {
             img = ImageIO.read(new File(IMG_PATH));
             width = img.getWidth();
@@ -38,5 +41,9 @@ public class ScanObjects {
 
     public String getName(){
         return name;
+    }
+
+    public int getKey() {
+        return key;
     }
 }
