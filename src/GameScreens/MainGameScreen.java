@@ -10,6 +10,7 @@ import org.opencv.core.Scalar;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -163,14 +164,13 @@ public class MainGameScreen extends JPanel implements MouseListener, MouseMotion
 
         // WE ARE DONE HERE
         if( foundCount == NUM_OBJECTS ){
-            ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("counterBackgroundDone.png")));
+            ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(layout.getDirectory("") + "counterBackgroundDone.png"));
             label.setIcon( icon );
             label.setText("<html>   All objects<br>   found!</html>");
             label.setHorizontalTextPosition(JLabel.CENTER);
             System.out.println("*** FOUND ALL *** ");
             done = true;
         }
-
     }
 
     public void setupCounter(){
@@ -180,7 +180,8 @@ public class MainGameScreen extends JPanel implements MouseListener, MouseMotion
         label.setLocation(1700, 20);
         label.setOpaque(true);
         //Icon (background)
-        ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("counterBackground.png")));
+        ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(layout.getDirectory("") + "counterBackground.png"));
+        ;
         label.setIcon( icon );
         // Set up the text
         label.setForeground(Color.WHITE);
@@ -190,47 +191,41 @@ public class MainGameScreen extends JPanel implements MouseListener, MouseMotion
     }
 
     public void updateCounterText(){
-//        if( done ){
-//            ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("counterBackgroundDone.png")));
-//            label.setIcon( icon );
-//            label.setText("<html>   All objects found!</html>");
-//        }else{
         label.setText( "<html>   Found: " + foundCount + "<br>Remaining: " + (NUM_OBJECTS-foundCount) + "</html>" );
-        // }
         label.setHorizontalTextPosition(JLabel.CENTER);
     }
 
     public void placeFlags(){
         // Place random flags
-//        Random randX = new Random();
-//        Random randY = new Random();
-//        int x, y;
-//        for( int r = 0; r < NUM_OBJECTS; r++ ){
-//            x = randX.nextInt( 1820 + 1 );
-//            y = randY.nextInt( 980 + 1  );
-//
-//            // Make sure we don't place on land
-//            double checkMask[] = maskMat.get( y, x );
-//            if( checkMask[0] == 0.0 && checkMask[1] == 0.0 && checkMask[2] == 0.0){
-//                System.out.println( "woops, on land" );
-//                r--;
-//            }else {
-//                randomX[r] = x;
-//                randomY[r] = y;
-//            }
-//        }
-        // CURRENTLY USING FIXED POINTS JUST FOR DEMO PURPOSES:
-        randomX[0] = 375;
-        randomX[1] = 760;
-        randomX[2] = 1100;
-        randomX[3] = 1530;
-        randomX[4] = 1090;
+        Random randX = new Random();
+        Random randY = new Random();
+        int x, y;
+        for( int r = 0; r < NUM_OBJECTS; r++ ){
+            x = randX.nextInt( 1820 + 1 );
+            y = randY.nextInt( 980 + 1  );
 
-        randomY[0] = 300;
-        randomY[1] = 750;
-        randomY[2] = 800;
-        randomY[3] = 480;
-        randomY[4] = 280;
+            // Make sure we don't place on land
+            double checkMask[] = maskMat.get( y, x );
+            if( checkMask[0] == 0.0 && checkMask[1] == 0.0 && checkMask[2] == 0.0){
+                System.out.println( "woops, on land" );
+                r--;
+            }else {
+                randomX[r] = x;
+                randomY[r] = y;
+            }
+        }
+//        // CURRENTLY USING FIXED POINTS JUST FOR DEMO PURPOSES:
+//        randomX[0] = 375;
+//        randomX[1] = 760;
+//        randomX[2] = 1100;
+//        randomX[3] = 1530;
+//        randomX[4] = 1090;
+//
+//        randomY[0] = 300;
+//        randomY[1] = 750;
+//        randomY[2] = 800;
+//        randomY[3] = 480;
+//        randomY[4] = 280;
 
         // Print out the flag locations AND MAKE FLAGS
         for( int f = 0; f < flagImages.length; f++ ){

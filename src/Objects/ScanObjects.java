@@ -20,7 +20,7 @@ public class ScanObjects {
     public ScanObjects(String name){
 
         this.name = name;
-        IMG_PATH = getClass().getClassLoader().getResource(name + "_scan.png").getPath();
+        IMG_PATH = System.getProperty("user.dir") + "\\Images\\ScanImages\\" + name + "_scan.png";
         try {
             img = ImageIO.read(new File(IMG_PATH));
             width = img.getWidth();

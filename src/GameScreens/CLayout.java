@@ -11,23 +11,37 @@ import java.lang.reflect.Method;
  * Created by danny on 3/1/15.
  */
 public class CLayout extends JFrame {
+    String curPanel = "";
+    public boolean level1, level2, level3;
+
     // Graphics utils
     private GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
     private GraphicsDevice vc = env.getDefaultScreenDevice();
     public DisplayMode dm = vc.getDisplayMode();
 
+    // CardLayout for the menu system
     public CardLayout cl = new CardLayout();
     // Container panel
     public JPanel panelContainer = new JPanel();
+
     // Game screens
-    WelcomeScreen welcomePanel = new WelcomeScreen(cl, panelContainer);
-    private InstructionDifficultyScreen difficultyPanel = new InstructionDifficultyScreen(this, panelContainer);
+    private WelcomeScreen welcomePanel;
+    private InstructionDifficultyScreen difficultyPanel;
+    private ResultsScreen resultsPanel;
     //private GuessingScreen guessingPanel = new GuessingScreen(this, panelContainer);
-    private ResultsScreen resultsPanel = new ResultsScreen(this, panelContainer);
-    String curPanel = "";
-    public static boolean level1, level2, level3;
+
+    // Current directory used for accessing all images
+    private String gameDirectory = "";
 
     public CLayout(){
+        System.out.println( "swag" );
+        System.out.println( System.getProperty( "user.dir" ) );
+        gameDirectory = System.getProperty("user.dir");
+        // Make the panels ///////
+        welcomePanel = new WelcomeScreen(this, panelContainer);
+        difficultyPanel = new InstructionDifficultyScreen(this, panelContainer);
+        resultsPanel = new ResultsScreen(this, panelContainer);
+
         panelContainer.setLayout(cl);
         /**
          * add each panel to the panelContainer
@@ -35,7 +49,6 @@ public class CLayout extends JFrame {
         panelContainer.add( welcomePanel, "1" );
         panelContainer.add( difficultyPanel, "2" );
         panelContainer.add( resultsPanel, "3");
-//        panelContainer.add( guessingPanel, "4" );
         /**
          * show the starting panel (welcome screen number)
          */
@@ -77,6 +90,30 @@ public class CLayout extends JFrame {
                 vc.setDisplayMode(dm);
             }catch(Exception ex){ex.printStackTrace();}
         }
+    }
+
+    // Grab the directory for the image folder we are looking for
+    // Using this instead of the resources folder
+    public String getDirectory(String folder){
+        String path = this.gameDirectory;
+        switch( folder ) {
+            case "guess":
+                path += "\\Images\\GuessImages\\";
+                return path;
+            case "menu":
+                path += "\\Images\\MenuImages\\";
+                return path;
+            case "scans":
+                path += "\\Images\\ScanImages\\";
+                return path;
+            case "level":
+                path += "\\Images\\LevelBackgroundImages\\";
+                return path;
+            case "":
+                path += "\\Images\\";
+                return path;
+        }
+        return path;
     }
 
     public void passResults( int scores, int total ){

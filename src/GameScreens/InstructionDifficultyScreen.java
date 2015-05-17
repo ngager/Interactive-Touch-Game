@@ -12,17 +12,17 @@ import java.awt.event.MouseListener;
  * Created by danny vasta on 2/26/15.
  */
 public class InstructionDifficultyScreen extends JPanel implements MouseListener{
-    // Path to background image
-    Image background = Toolkit.getDefaultToolkit().createImage( getClass().getClassLoader().getResource("hurricane_template_instructions.png") );
+    Image background;
     JPanel panelContainer;
     CardLayout cl;
     CLayout layout;
-    Rectangle r1, r2, r3;
 
     public InstructionDifficultyScreen(final CLayout layout, final JPanel panelContainer) {
         this.cl = layout.cl;
         this.layout = layout;
         this.panelContainer = panelContainer;
+        // Path to background image
+        background = Toolkit.getDefaultToolkit().createImage( layout.getDirectory("menu") + "instructions_background.png");
 
         addMouseListener( this );
         this.setLayout(null);

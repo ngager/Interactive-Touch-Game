@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -16,8 +17,7 @@ import java.util.Random;
  * Created by danny on 2/26/15.
  */
 public class GuessingScreen extends JPanel implements MouseListener{
-    // Path to background image
-    Image background = Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("hurricane_template_guessing.png"));
+    Image background;
     CLayout layout;
     CardLayout cl;
     JPanel panelContainer;
@@ -44,7 +44,8 @@ public class GuessingScreen extends JPanel implements MouseListener{
         this.layout = layout;
         this.cl = layout.cl;
         this.panelContainer = panelContainer;
-
+        // Path to the background image
+        background =  Toolkit.getDefaultToolkit().createImage(layout.getDirectory("menu") + "guessing_background.png");
         // Set up all of the game objects
         pastLeftScans = new String[10];
         guessOptions = new GuessObjects[NUM_OBJECTS - 1];
@@ -89,13 +90,6 @@ public class GuessingScreen extends JPanel implements MouseListener{
         String name2 = objectNames[indeces[1]];
         String name3 = objectNames[indeces[2]];
         String name4 = objectNames[indeces[3]];
-
-//        System.out.println("--- Objects ---");
-//        System.out.println(name);
-//        System.out.println( name2 );
-//        System.out.println( name3 );
-//        System.out.println( name4 );
-//        System.out.println( "---------------" );
 
         // Pick the object for the left
         for(ScanObjects s : allScans){

@@ -1,21 +1,16 @@
 package GameScreens;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
  * Created by danny on 2/26/15.
  */
 public class ResultsScreen extends JPanel implements MouseListener{
-    // Path to background image
-    Image background = Toolkit.getDefaultToolkit().createImage(getClass().getClassLoader().getResource("hurricane_template_score.png"));
+    Image background;
     private int finalScore;
     private int possibleTotal;
     private float percent;
@@ -24,11 +19,14 @@ public class ResultsScreen extends JPanel implements MouseListener{
     JPanel panelContainer;
 
     public ResultsScreen(final CLayout layout, final JPanel panelContainer){
-        addMouseListener( this );
+        addMouseListener(this);
         this.setLayout(null);
         this.layout = layout;
         this.cl = layout.cl;
         this.panelContainer = panelContainer;
+
+        // Path to background image
+        background = Toolkit.getDefaultToolkit().createImage( layout.getDirectory("menu") + "score_background.png");
 
         Action reset = new AbstractAction()
         {

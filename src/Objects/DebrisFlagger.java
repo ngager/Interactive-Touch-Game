@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class DebrisFlagger {
 
-    private final String IMG_PATH = getClass().getClassLoader().getResource("foundFlag.png").getPath();
+    private final String IMG_PATH = System.getProperty("user.dir") + "\\Images\\foundFlag.png";
     public BufferedImage img;
     public int x, y, height, width;
     public Rectangle bounds;

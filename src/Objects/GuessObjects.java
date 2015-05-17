@@ -20,7 +20,7 @@ public class GuessObjects {
     public GuessObjects(String name){
 
         this.name = name;
-        IMG_PATH = getClass().getClassLoader().getResource(name + "_sm.jpg").getPath();
+        IMG_PATH = System.getProperty("user.dir") + "\\Images\\GuessImages\\" + name + "_sm.png";
         try {
             img = ImageIO.read(new File(IMG_PATH));
             width = img.getWidth();

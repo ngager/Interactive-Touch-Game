@@ -10,7 +10,7 @@ import java.io.IOException;
  * Created by danny on 3/12/15.
  */
 public class DraggableBoat {
-    private final String IMG_PATH = getClass().getClassLoader().getResource("draggableBoat.png").getPath();
+    private final String IMG_PATH = System.getProperty("user.dir") + "\\Images\\DraggableImages\\draggableBoat.png";
     public BufferedImage img;
     public int x, y, height, width;
     public Rectangle bounds;
