@@ -26,7 +26,7 @@ public class GuessingScreen extends JPanel implements MouseListener{
     int leftScanX = 356;
     int leftScanY = 426;
     private final int NUM_GUESSES = 5;
-    private final int NUM_SCANS_AND_OBJ = 30;
+    private int NUM_SCANS_AND_OBJ = 0;
     int pastIndex = 0;
     int userScore = 0;
     BufferedImage leftScanImage;
@@ -48,6 +48,10 @@ public class GuessingScreen extends JPanel implements MouseListener{
         this.panelContainer = panelContainer;
         // Path to the background image
         background =  Toolkit.getDefaultToolkit().createImage(layout.getDirectory("menu") + "guessing_background.png");
+
+        String guessDir = layout.getDirectory("guess");
+        String scanDir = layout.getDirectory("scans");
+        NUM_SCANS_AND_OBJ = new File(guessDir).listFiles().length;
         // Set up all of the game objects
         pastLeftScans = new int[NUM_SCANS_AND_OBJ];
         guessOptions = new GuessObjects[NUM_GUESSES - 1];
@@ -58,7 +62,6 @@ public class GuessingScreen extends JPanel implements MouseListener{
         objectNames = new String[NUM_SCANS_AND_OBJ];
 
         // Guess objects
-        String guessDir = layout.getDirectory("guess");
         File guessDirectory = new File(guessDir);
         for( int f = 0; f < guessDirectory.listFiles().length; f++ ) {
             String gName = guessDirectory.listFiles()[f].toString();
@@ -66,7 +69,6 @@ public class GuessingScreen extends JPanel implements MouseListener{
         }
         
         // Scan objects
-        String scanDir = layout.getDirectory("scans");
         File scanDirectory = new File(scanDir);
         for( int f = 0; f < scanDirectory.listFiles().length; f++ ) {
             String sName = scanDirectory.listFiles()[f].toString();
