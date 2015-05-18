@@ -1,14 +1,12 @@
 package GameScreens;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
-import java.net.URISyntaxException;
+
 
 /**
  * Created by nicolegager on 2/26/15.
@@ -20,14 +18,19 @@ public class WelcomeScreen extends JPanel implements MouseListener, ActionListen
     JPanel panelContainer;
 
     public WelcomeScreen(CLayout cl, JPanel panelContainer) {
-        addMouseListener( this );
+
+        addMouseListener(this);
         this.setLayout(null);
         this.layout = cl;
         this.panelContainer = panelContainer;
+
+        // Path to the background image
         background = Toolkit.getDefaultToolkit().createImage( layout.getDirectory("menu") + "welcome_background.png" );
-        System.out.println( layout.getDirectory("menu") + "welcome_background.png");
+
+        // System.out.println( layout.getDirectory("menu") + "welcome_background.png");
     }
 
+    // Sets the background image
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         super.paintComponent(g2);
@@ -38,6 +41,7 @@ public class WelcomeScreen extends JPanel implements MouseListener, ActionListen
     public void actionPerformed(ActionEvent e) {}
 
 
+    // Brings user to InstructionDifficultyScreen when the specified location (of the start button) is clicked
     @Override
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();

@@ -96,6 +96,7 @@ public class CLayout extends JFrame {
     // Using this instead of the resources folder
     public String getDirectory(String folder){
         String path = this.gameDirectory;
+
         switch( folder ) {
             case "guess":
                 path += "\\Images\\GuessImages\\";

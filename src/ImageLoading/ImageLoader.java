@@ -130,8 +130,7 @@ public class ImageLoader {
             if( values[0] == 0.0 ){
                // System.out.println("black -- do nothing");
             // GRAY
-            }else if (values[0] == 128.0) {
-                // System.out.println( "gray" );
+            }else if( values[0] == 128.0 ){
                 // Have to only check the rows that we need around the circle!
                 int rowStart = (int) mousePoint.y - 50;
                 int rowEnd = (int) mousePoint.y + 50;
@@ -139,15 +138,17 @@ public class ImageLoader {
                 int colStart = (int) mousePoint.x - 50;
                 int colEnd = (int) mousePoint.x + 50;
 
-                for (int r = rowStart; r < rowEnd; r++) {
-                    for (int c = colStart; c < colEnd; c++) {
-                        if( r >= 0 && r <= 1080 && c >= 0 && c <= 1920 ) {
-                            double[] vals = reveal.get(r, c);
-                            double[] valid = maskMat.get(r, c);
-                            if (vals == null || valid == null) {
-                                //System.out.println("null");
-                            } else if (vals[0] == 255.0 && planeActive && valid[0] == 128.0 && valid[1] == 128.0 && valid[2] == 128.0) {
-                                destination.put(r, c, belowMat.get(r, c));
+                for( int r = rowStart; r < rowEnd; r++ ){
+                    for( int c = colStart; c < colEnd; c++ ){
+                        if( r >= 0 && r <= 1080 && c >= 0 && c <= 1920 ){
+                            double[] revealVal = reveal.get( r, c );
+                            double[] maskVal = maskMat.get( r, c );
+                            if( revealVal != null && maskVal != null ){
+                                if( revealVal[0] == 255.0 && planeActive ){
+                                    if( maskVal[0] == 128.0 && maskVal[1] == 128.0 && maskVal[2] == 128.0 ){
+                                        destination.put( r, c, belowMat.get(r, c) );
+                                    }
+                                }
                             }
                         }
                     }

@@ -8,16 +8,23 @@ import java.io.IOException;
 
 /**
  * Created by nicolegager on 4/8/15.
+ * This class reads the image of a flag into a BufferedImage and gives the flag certain properties to easily handle the
+ * image in the game.
  */
 public class DebrisFlagger {
 
+    // Path of the flag image
     private final String IMG_PATH = System.getProperty("user.dir") + "\\Images\\foundFlag.png";
+
     public BufferedImage img;
+
+    // Flag properties
     public int x, y, height, width;
     public Rectangle bounds;
     public boolean uncovered = false;
 
     public DebrisFlagger(int xLoc, int yLoc){
+
         try {
             img = ImageIO.read(new File(IMG_PATH));
             width = img.getWidth();
